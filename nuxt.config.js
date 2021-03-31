@@ -1,6 +1,6 @@
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -35,9 +35,8 @@ export default {
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-  ],
-  mode: 'universal',
+  buildModules: [],
+  ssr: true,
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/axios',
@@ -49,7 +48,7 @@ export default {
   //https://axios.nuxtjs.org/setup/
   axios: {
     baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api',
-    browserBaseURL: process.env.browserBaseURL ||'http://127.0.0.1:8000/api',
+    browserBaseURL: process.env.browserBaseURL || 'http://127.0.0.1:8000/api',
     debug: true,
   },
   loaders:
