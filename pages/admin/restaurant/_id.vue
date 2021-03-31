@@ -43,6 +43,11 @@ export default {
     restaurant: Object,
   }),
   middleware: [admin, auth],
+  activated() {
+    if (!this.$store.getters['authorization/admin']) {
+      return error({ statusCode: 404, message: '' })
+    }
+  },
   async created() {
     this.restaurant = this.restaurant_passed
     await this.getDishes();

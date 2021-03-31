@@ -21,11 +21,9 @@
 </template>
 
 <script>
-import Navbar from "~/components/navbar/Navbar";
 
 export default {
   props: ['error'],
-  components: {Navbar}
 }
 
 </script>

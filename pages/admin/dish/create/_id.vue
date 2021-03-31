@@ -13,6 +13,11 @@ export default {
   name: "admin-dish-create-id",
   components: {DishForm},
   middleware: [admin, auth],
+  activated() {
+    if (!this.$store.getters['authorization/admin']) {
+      return error({ statusCode: 404, message: '' })
+    }
+  },
   computed:{
     rest_id: function (){
       return Number(this.$route.params.id)

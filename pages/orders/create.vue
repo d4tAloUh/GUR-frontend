@@ -152,7 +152,7 @@ export default {
     },
     lookupCoordinates: function () {
       let vm = this
-      this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.address + ', Kyiv&region=ua&language=uk&key=AIzaSyBdFkBuWzmpHqyO-yoV_MqqIPZ6Mt15iqs')
+      this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.address + ', Kyiv&region=ua&language=uk&key=' + this.google_key)
         .then(function (response) {
           if (response.data.status === "OK" && response.data.results.length > 0) {
             vm.predicted_address = response.data.results[0].formatted_address
@@ -193,8 +193,10 @@ export default {
 
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
+    },
+    google_key : function (){
+      return process.env.google_key
     }
-
   },
   watch: {
     address: function (val) {

@@ -36,12 +36,15 @@ import Restaurant from "~/components/restaurant/Restaurant";
 
 export default {
   name: "admin-index",
-  middleware: [admin, auth],
+  middleware: [auth,admin],
   components: {Restaurant, Loading},
   data: () => ({
     restaurants: []
   }),
   activated() {
+    if (!this.$store.getters['authorization/admin']) {
+      return error({ statusCode: 404, message: '' })
+    }
     // if updated more than 10sec before now
     if (this.$fetchState.timestamp <= Date.now() - 10000) {
       this.$fetch()
@@ -78,7 +81,7 @@ export default {
   watch: {
     async deleted_rest_id() {
       if (this.deleted_rest_id !== 0){
-        let rest = this.restaurants.filter((val) => {
+        this.restaurants = this.restaurants.filter((val) => {
           return val.rest_id !== this.deleted_rest_id
         })
         await this.$store.dispatch('admin/do_set_deleted_rest_id', 0)

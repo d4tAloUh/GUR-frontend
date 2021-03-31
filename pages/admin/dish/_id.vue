@@ -16,6 +16,11 @@ export default {
   data: () => ({
     dish: Object,
   }),
+  activated() {
+    if (!this.$store.getters['authorization/admin']) {
+      return error({ statusCode: 404, message: '' })
+    }
+  },
   async created() {
     this.dish = this.dish_passed
   },
