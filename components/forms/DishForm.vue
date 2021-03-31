@@ -7,7 +7,8 @@
 
       <div class="uk-margin">
         <label>Назва страви</label>
-        <input type="text" name="name" v-model="dish.name " required class="uk-input"/>
+        <input type="text" name="name" v-model="dish.name " required class="uk-input"
+               v-bind:class="(dish.name.length===0)?'uk-form-danger':'uk-form-success'"/>
       </div>
       <div class="uk-margin">
         <label>Фотографія страви</label>
@@ -19,11 +20,13 @@
       </div>
       <div class="uk-margin">
         <label>Ціна (в коп)</label>
-        <input type="number" name="open_from" v-model="dish.price" class="uk-input" required/>
+        <input type="number" name="open_from" v-model="dish.price" class="uk-input" required min="1"
+               v-bind:class="(dish.price===0)?'uk-form-danger':'uk-form-success'"/>
       </div>
       <div class="uk-margin">
         <label>Грамовка</label>
-        <input type="number" name="open_to" v-model="dish.gramme" class="uk-input" required/>
+        <input type="number" name="open_to" v-model="dish.gramme" class="uk-input" required min="1"
+               v-bind:class="(dish.gramme===0)?'uk-form-danger':'uk-form-success'"/>
       </div>
       <div class="uk-align-right">
         <button to="/admin" class="uk-button uk-button-secondary" @click="$router.back()">Назад</button>
@@ -58,38 +61,38 @@ export default {
       type: Number
     }
   },
-  methods:{
+  methods: {
     post_create: _.debounce(async function () {
-        await this.$axios.post('/restaurant-dishes/0', {
-          name: this.dish.name,
-          dish_photo: this.dish.dish_photo,
-          restaurant_id: this.rest_id,
-          description: this.dish.description,
-          price: this.dish.price,
-          gramme: this.dish.gramme
+      await this.$axios.post('/restaurant-dishes/0', {
+        name: this.dish.name,
+        dish_photo: this.dish.dish_photo,
+        restaurant_id: this.rest_id,
+        description: this.dish.description,
+        price: this.dish.price,
+        gramme: this.dish.gramme
+      })
+        .then(response => {
+          this.$toast.success("Страву було успішно створено", {
+            toastClassName: ['uk-margin-top']
+          })
+          this.$router.back()
         })
-          .then(response => {
-            this.$toast.success("Страву було успішно створено", {
+        .catch(err => {
+          console.log(err)
+          if (!err.response) {
+            this.$toast.error("Помилка мережі", {
               toastClassName: ['uk-margin-top']
             })
-            this.$router.back()
-          })
-          .catch(err => {
-            console.log(err)
-            if (!err.response) {
-              this.$toast.error("Помилка мережі", {
-                toastClassName: ['uk-margin-top']
-              })
-              console.error(err)
-            } else {
-              this.$toast.error(err.response.data.error || "Сталася помилка", {
-                toastClassName: ['uk-margin-top']
-              })
-              console.error(err.response)
-            }
-          })
+            console.error(err)
+          } else {
+            this.$toast.error(err.response.data.error || "Сталася помилка", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.error(err.response)
+          }
+        })
 
-    },2000,{leading:true, trailing:false}),
+    }, 2000, {leading: true, trailing: false}),
     post_update: _.debounce(async function () {
       await this.$axios.$put('/restaurant-dishes/' + this.dish.dish_id, {
         name: this.dish.name,
@@ -119,7 +122,7 @@ export default {
             console.error(err.response)
           }
         })
-    },2000,{leading:true, trailing:false}),
+    }, 2000, {leading: true, trailing: false}),
     post_delete: async function () {
       await this.$axios.$delete('/restaurant-dishes/' + this.dish.dish_id, {
         data: {

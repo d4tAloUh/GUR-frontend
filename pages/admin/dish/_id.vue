@@ -6,10 +6,13 @@
 
 <script>
 import DishForm from "~/components/forms/DishForm";
+import admin from "~/middleware/admin";
+import auth from "~/middleware/auth";
 
 export default {
   name: "admin-dish-id",
   components:{DishForm},
+  middleware: [admin, auth],
   data: () => ({
     dish: Object,
   }),

@@ -48,8 +48,8 @@ export default {
   build: {},
   //https://axios.nuxtjs.org/setup/
   axios: {
-    baseURL: 'http://127.0.0.1:8000/api',
-    browserBaseURL: 'http://127.0.0.1:8000/api',
+    baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api',
+    browserBaseURL: process.env.browserBaseURL ||'http://127.0.0.1:8000/api',
     debug: true,
   },
   loaders:

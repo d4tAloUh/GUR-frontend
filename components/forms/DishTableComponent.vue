@@ -40,7 +40,7 @@ export default {
         }
       })
         .then(response => {
-          this.$toast.success("Ресторан було успішно видалено", {
+          this.$toast.success("Страву було успішно видалено", {
             toastClassName: ['uk-margin-top']
           })
           this.$emit('delete-dish', this.dish.dish_id)

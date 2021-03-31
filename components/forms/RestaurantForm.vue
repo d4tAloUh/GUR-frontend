@@ -76,8 +76,8 @@ export default {
             this.$toast.success("Ресторан було успішно створено", {
               toastClassName: ['uk-margin-top']
             })
-            console.log(response)
             Object.assign(this.restaurant, response.data)
+            this.$router.push("/admin/restaurant/" + this.restaurant.rest_id)
           })
           .catch(err => {
             console.log(err)

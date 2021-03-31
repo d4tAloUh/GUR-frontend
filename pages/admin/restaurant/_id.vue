@@ -5,7 +5,7 @@
     </div>
     <RestaurantForm :restaurant="restaurant"/>
     <div class="uk-margin-top">
-      <NuxtLink :to="{ name: 'admin-dish-create', params: { rest_id}}" tag="a"
+      <NuxtLink :to="{ name: 'admin-dish-create-id', params: {id:rest_id}}" tag="a"
                 class="uk-button uk-button-success uk-align-right" >Додати страву
       </NuxtLink>
     </div>
@@ -32,6 +32,8 @@
 <script>
 import RestaurantForm from "~/components/forms/RestaurantForm";
 import DishTableComponent from "~/components/forms/DishTableComponent";
+import admin from "~/middleware/admin";
+import auth from "~/middleware/auth";
 
 export default {
   name: "admin-restaurant",
@@ -40,6 +42,7 @@ export default {
     dishes: [],
     restaurant: Object,
   }),
+  middleware: [admin, auth],
   async created() {
     this.restaurant = this.restaurant_passed
     await this.getDishes();
