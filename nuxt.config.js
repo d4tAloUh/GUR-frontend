@@ -4,26 +4,31 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'nuxt-front',
+    title: 'GUR ',
     htmlAttrs: {
       lang: 'en'
     },
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: 'Glovo-Uber-Raketa sample'}
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}
     ]
   },
-
-  // Global CSS: https://go.nuxtjs.dev/config-css
+  env: {
+    google_key: process.env.google_key || 'AIzaSyC5aRn9eeSv9WaTQCucsed0S_-57rETsW0'
+  },
+  // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
+    "uikit/dist/css/uikit.min.css",
+    "uikit/dist/css/uikit.css",
   ],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
+  // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
+    {src: '~/plugins/uikit.js', ssr: false},
+    '~/plugins/axios.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -33,11 +38,27 @@ export default {
   buildModules: [
   ],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
+  // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
+    '@nuxtjs/axios',
+    "vue-toastification/nuxt",
   ],
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  }
+  // Build Configuration (https://go.nuxtjs.dev/config-build)
+  build: {},
+  //https://axios.nuxtjs.org/setup/
+  axios: {
+    baseURL: 'http://127.0.0.1:8000/api',
+    browserBaseURL: 'http://127.0.0.1:8000/api',
+    debug: true,
+  },
+  loaders:
+    {
+      vue: {
+        transformAssetUrls: {
+          img: "data-src",
+          div: "data-src"
+        }
+      }
+    },
 }

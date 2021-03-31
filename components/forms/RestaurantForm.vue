@@ -1,0 +1,188 @@
+<template>
+  <div class="uk-card uk-card-default uk-card-body">
+    <fieldset class="uk-fieldset">
+      <div style="overflow: auto">
+      <button class="uk-button uk-button-danger uk-float-right " @click="post_delete" v-if="!to_create">Видалити</button>
+      </div>
+      <legend class="uk-legend" v-if="!to_create">Зміна ресторану <b>{{ restaurant.name }}</b></legend>
+      <legend class="uk-legend" v-else>Створення ресторану <b>{{ restaurant.name }}</b></legend>
+
+      <div class="uk-margin">
+        <label>Назва ресторану</label>
+        <input type="text" name="name" v-model="restaurant.name " required class="uk-input"/>
+      </div>
+      <div class="uk-margin">
+        <label>Адреса ресторану</label>
+        <input type="text" name="rest_address" v-model="restaurant.rest_address" required class="uk-input"/>
+      </div>
+      <div class="uk-margin">
+        <label>Посилання на фото ресторану</label>
+        <input type="text" name="rest_photo" v-model="restaurant.rest_photo" class="uk-input"/>
+      </div>
+      <div class="uk-margin">
+        <label>Відкрито з</label>
+        <input type="time" name="open_from" v-model="restaurant.open_from" class="uk-input"/>
+      </div>
+      <div class="uk-margin">
+        <label>Відкрито до</label>
+        <input type="time" name="open_to" v-model="restaurant.open_to" class="uk-input"/>
+      </div>
+      <div class="uk-align-right">
+        <button class="uk-button uk-button-success" @click="post_create" v-if="to_create">Створити</button>
+        <button class="uk-button uk-button-primary" @click="post_update" v-else>Змінити</button>
+      </div>
+    </fieldset>
+  </div>
+</template>
+
+<script>
+import _ from 'lodash'
+export default {
+  name: "RestaurantForm",
+  props: {
+    restaurant: {
+      type: Object,
+      default: () => ({
+        rest_photo: '',
+        rest_address: '',
+        name: '',
+        open_from: '',
+        open_to: '',
+        rest_id: 0
+      })
+    },
+    to_create: {
+      type: Boolean,
+      default: false
+    },
+  },
+  data: () => ({
+    location: [],
+  }),
+  methods: {
+    post_create: _.debounce(async function () {
+      await this.get_location()
+      if (this.location.length > 0)
+        await this.$axios.post('/restaurants', {
+          rest_photo: this.restaurant.rest_photo,
+          rest_address: this.restaurant.rest_address,
+          name: this.restaurant.name,
+          open_from: this.restaurant.open_from,
+          open_to: this.restaurant.open_to,
+          longitude: this.location[0],
+          latitude: this.location[1],
+        })
+          .then(response => {
+            this.$toast.success("Ресторан було успішно створено", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.log(response)
+            Object.assign(this.restaurant, response.data)
+          })
+          .catch(err => {
+            console.log(err)
+            if (!err.response) {
+              this.$toast.error("Помилка мережі", {
+                toastClassName: ['uk-margin-top']
+              })
+              console.error(err)
+            } else {
+              this.$toast.error(err.response.data.error || "Сталася помилка", {
+                toastClassName: ['uk-margin-top']
+              })
+              console.error(err.response)
+            }
+          })
+
+    },2000,{leading:true, trailing:false}),
+    get_location: async function () {
+      let vm = this
+      return this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.restaurant.rest_address + ', Kyiv&region=ua&language=uk&key=' + process.env.google_key)
+        .then(function (response) {
+          if (response.data.status === "OK" && response.data.results.length > 0) {
+            vm.restaurant.rest_address = response.data.results[0].formatted_address
+            vm.location = [response.data.results[0].geometry.location.lng,
+              response.data.results[0].geometry.location.lat]
+            return vm.location
+          } else {
+            vm.$toast.error("Не було знайдено такої адреси", {
+              toastClassName: ['uk-margin-top']
+            })
+          }
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
+    },
+    post_update: _.debounce(async function () {
+      await this.$axios.$put('/restaurants', {
+        rest_photo: this.restaurant.rest_photo,
+        rest_address: this.restaurant.rest_address,
+        name: this.restaurant.name,
+        open_from: this.restaurant.open_from,
+        open_to: this.restaurant.open_to,
+      }, {
+        params: {
+          'rest_id': this.restaurant.rest_id,
+        }
+      })
+        .then(response => {
+          this.$toast.success("Інформацію було успішно оновлено", {
+            toastClassName: ['uk-margin-top']
+          })
+        })
+        .catch(err => {
+          if (!err.response) {
+            this.$toast.error("Помилка мережі", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.error(err)
+          } else {
+            this.$toast.error(err.response.data.error || "Сталася помилка", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.error(err.response)
+          }
+        })
+    },2000,{leading:true, trailing:false}),
+    post_delete:async function () {
+
+      await this.$axios.$delete('/restaurants', {
+        data: {
+          'rest_id': this.restaurant.rest_id
+        }
+      })
+        .then(response => {
+          this.$toast.success("Ресторан було успішно видалено", {
+            toastClassName: ['uk-margin-top']
+          })
+
+          this.$store.dispatch('admin/do_set_deleted_rest_id', this.restaurant.rest_id)
+          this.$router.push('/admin')
+        })
+        .catch(err => {
+          if (!err.response) {
+            this.$toast.error("Помилка мережі", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.error(err)
+          } else {
+            this.$toast.error(err.response.data.error || "Сталася помилка", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.error(err.response)
+          }
+        })
+    }
+  },
+
+}
+</script>
+
+<style scoped>
+.uk-button-success {
+  background-color: #08a442;
+  color: #fff;
+  border: 1px solid transparent;
+}
+</style>
