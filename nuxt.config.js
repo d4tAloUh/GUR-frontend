@@ -54,7 +54,7 @@ export default {
     proxy: true
   },
   proxy: {
-    '/api': {target: 'http://67caed2e6e74.ngrok.io/api'}
+    '/api': process.env.baseURL
   },
   loaders:
     {
