@@ -41,6 +41,7 @@ export default {
   modules: [
     '@nuxtjs/axios',
     "vue-toastification/nuxt",
+    '@nuxtjs/proxy'
   ],
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
@@ -50,6 +51,10 @@ export default {
     baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api',
     browserBaseURL: process.env.browserBaseURL || 'http://127.0.0.1:8000/api',
     debug: true,
+    proxy: true
+  },
+  proxy: {
+    '/api': {target: 'http://67caed2e6e74.ngrok.io/api'}
   },
   loaders:
     {
