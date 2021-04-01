@@ -16,7 +16,7 @@ export const mutations = {
     Cookies.set('order_id', state.order_id)
   },
   setRestId(state, rest_id) {
-    if (state.items.length !==0)
+    if (state.items.length !== 0)
       state.rest_id = rest_id
     else
       state.rest_id = 0
@@ -75,57 +75,67 @@ export const actions = {
   async addItem({commit, state, dispatch}, item) {
     if (item.restaurant_id !== state.rest_id && Number(state.rest_id) !== 0)
       return Promise.reject("Adding dish from other restaurant")
-
     await dispatch('syncWithServer')
 
     const record = state.items.find(i => i.dish_id === item.dish_id)
     // This item exists in items
     if (!record) {
-      commit('addNotExistingItem', item)
       this.$axios.$post('/order-dishes/' + state.order_id + '/' + item.dish_id, {
         'order_id': state.order_id,
         'dish_id': item.dish_id,
         'quantity': 1
+      }).then(response => {
+        commit('addNotExistingItem', item)
+        if (Number(state.rest_id) === 0 || typeof state.rest_id === 'undefined')
+          commit('setRestId', item.restaurant_id)
       }).catch(err => {
-        commit('delete', item)
+        // commit('delete', item)
         console.error(err.response)
       })
     } else {
       //Add this item to order
-      commit('increaseQuantity', record)
       this.$axios.$put('/order-dishes/' + state.order_id + '/' + item.dish_id, {
         'order_id': state.order_id,
         'dish_id': item.dish_id,
         'quantity': record.quantity
-      }).catch(err => {
-        commit('reduceQuantity', record)
-        console.error(err.response)
+      }).then(response => {
+        commit('increaseQuantity', record)
+        if (Number(state.rest_id) === 0 || typeof state.rest_id === 'undefined')
+          commit('setRestId', item.restaurant_id)
       })
+        .catch(err => {
+          // commit('reduceQuantity', record)
+          console.error(err.response)
+        })
     }
-    if (Number(state.rest_id) === 0 || typeof state.rest_id === 'undefined')
-      commit('setRestId', item.restaurant_id)
+
   },
   async removeItem({commit, state, dispatch}, item) {
     const record = state.items.find(i => i.dish_id === item.dish_id)
     if (record.quantity > 1) {
-      commit('reduceQuantity', record)
       this.$axios.$put('/order-dishes/' + state.order_id + '/' + item.dish_id, {
         'order_id': state.order_id,
         'dish_id': item.dish_id,
         'quantity': record.quantity
-      }).catch(err => {
-        commit('increaseQuantity', record)
-        console.error(err.response)
+      }).then(response => {
+        commit('reduceQuantity', record)
       })
+        .catch(err => {
+          // commit('increaseQuantity', record)
+          console.error(err.response)
+        })
     } else {
       await dispatch('deleteItem', item)
     }
   },
   async deleteItem({commit, state, dispatch}, item) {
-    commit('delete', item)
-    this.$axios.$delete('/order-dishes/' + state.order_id + '/' + item.dish_id, {})
+
+    this.$axios.$delete('/order-dishes/' + state.order_id + '/' + item.dish_id)
+      .then(response => {
+      commit('delete', item)
+    })
       .catch(err => {
-        commit('addNotExistingItem', item)
+        // commit('addNotExistingItem', item)
         console.error(err.response)
       })
   },

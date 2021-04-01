@@ -54,7 +54,7 @@ export default {
     proxy: true
   },
   proxy: {
-    '/api': process.env.baseURL
+    '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
   },
   loaders:
     {

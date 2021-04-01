@@ -62,8 +62,13 @@
                     uk-textarea>
           </textarea>
         </div>
-        <button type="submit" class="uk-button uk-button-primary" name="button">Створити замовення</button>
+        <div>
+          <button type="submit" class="uk-button uk-button-primary" name="button">Створити замовення</button>
+          <button class="uk-button uk-button-danger uk-float-right" @click="clearCart" >Прибрати усе з кошика</button>
+        </div>
       </form>
+
+
     </div>
     <div v-else>
       Ваш кошик порожній
@@ -137,6 +142,13 @@ export default {
                 console.error(err)
               }
               else{
+                if (err.response.data && err.response.data.error && err.response.data.error ==='Ваше замовлення пусте'){
+                    this.clearCart()
+                    this.$toast.error("Таких страв більше не існує", {
+                      toastClassName: ['uk-margin-top']
+                    })
+                }
+                else
                 this.$toast.error(err.response.data.error || "Сталася помилка", {
                   toastClassName: ['uk-margin-top']
                 })
@@ -180,6 +192,9 @@ export default {
       this.predicted_location = ''
       this.accepted = false
       Uikit.modal('.address-confirmation').toggle()
+    },
+    async clearCart() {
+      await this.$store.dispatch('cart/emptyCart')
     }
   },
   computed: {
