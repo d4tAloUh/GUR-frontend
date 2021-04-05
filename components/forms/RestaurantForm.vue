@@ -9,11 +9,13 @@
 
       <div class="uk-margin">
         <label>Назва ресторану</label>
-        <input type="text" name="name" v-model="restaurant.name " required class="uk-input"/>
+        <input type="text" name="name" v-model="restaurant.name " required class="uk-input"
+               v-bind:class="(restaurant.name.length===0)?'uk-form-danger':'uk-form-success'"/>
       </div>
       <div class="uk-margin">
         <label>Адреса ресторану</label>
-        <input type="text" name="rest_address" v-model="restaurant.rest_address" required class="uk-input"/>
+        <input type="text" name="rest_address" v-model="restaurant.rest_address" required class="uk-input"
+               v-bind:class="(restaurant.rest_address.length===0)?'uk-form-danger':'uk-form-success'"/>
       </div>
       <div class="uk-margin">
         <label>Посилання на фото ресторану</label>
