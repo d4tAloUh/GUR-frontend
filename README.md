@@ -1,5 +1,6 @@
-# nuxt-front
-
+# GUR (Glovo-Uber-Raketa sample)
+####Built with SSR Nuxt
+####Ready to deploy to heroku/vercel etc.
 ## Build Setup
 
 ```bash
@@ -16,5 +17,3 @@ $ npm run start
 # generate static project
 $ npm run generate
 ```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
