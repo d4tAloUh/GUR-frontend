@@ -1,6 +1,6 @@
 # GUR (Glovo-Uber-Raketa sample)
-####Built with SSR Nuxt
-####Ready to deploy to heroku/vercel etc.
+#### Built with SSR Nuxt
+#### Ready to deploy to heroku/vercel etc.
 ## Build Setup
 
 ```bash
