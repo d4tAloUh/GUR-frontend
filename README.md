@@ -1,4 +1,4 @@
-# GUR (Glovo-Uber-Raketa sample)
+# GUR (Glovo-Uber-Raketa sample) frontend
 #### Built with SSR Nuxt
 #### Ready to deploy to heroku/vercel etc.
 ## Build Setup
