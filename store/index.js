@@ -34,7 +34,7 @@ export const actions = {
       try {
         await dispatch('authorization/refresh')
       } catch (e) {
-        if (e.status){
+        if (e.status) {
           await dispatch('authorization/logout')
           await dispatch('order/clear')
         }

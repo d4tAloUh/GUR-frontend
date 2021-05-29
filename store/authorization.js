@@ -56,6 +56,9 @@ export const getters = {
   getToken: (state) => {
     return state.refresh_token
   },
+  getAccessToken: (state) => {
+    return state.access_token
+  },
   tried: (state) => {
     return state.retry
   },

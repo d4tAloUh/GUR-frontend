@@ -53,9 +53,9 @@ export default {
     debug: true,
     proxy: true
   },
-  proxy: {
-    '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
-  },
+  // proxy: {
+  //   '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
+  // },
   loaders:
     {
       vue: {
