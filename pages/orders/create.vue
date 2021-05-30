@@ -121,8 +121,10 @@ export default {
           await this.$axios.$put('/orders', {
             "order_id": this.order_id,
             "order_details": this.order_details,
-            "longitude": this.order_location[0],
-            "latitude": this.order_location[1],
+            "delivery_location":{
+              "longitude": this.order_location[0],
+              "latitude": this.order_location[1],
+            },
             "delivery_address": this.address
           })
             .then(res => {
