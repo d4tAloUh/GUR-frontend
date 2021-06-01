@@ -15,7 +15,7 @@ export const getters = {
 }
 
 export const actions = {
-  do_set_order_id({commit}, order) {
+  do_set_order({commit}, order) {
     commit('set_order', order)
   },
 }

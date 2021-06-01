@@ -3,17 +3,17 @@
     <NuxtLink tag="a" class="uk-button uk-button-primary uk-margin" to="/profile" exact><span
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
-    <div>
-      <div class="uk-margin">
-        <label>longitude</label>
-        <input type="text" name="location" v-model="location.longitude" class="uk-input"/>
-      </div>
-      <div class="uk-margin">
-        <label>latitude</label>
-        <input type="text" name="location" v-model="location.latitude" class="uk-input"/>
-      </div>
-      <button class="uk-button uk-button-danger" @click="send_update">onovyti</button>
-    </div>
+<!--    <div>-->
+<!--      <div class="uk-margin">-->
+<!--        <label>longitude</label>-->
+<!--        <input type="text" name="location" v-model="location.longitude" class="uk-input"/>-->
+<!--      </div>-->
+<!--      <div class="uk-margin">-->
+<!--        <label>latitude</label>-->
+<!--        <input type="text" name="location" v-model="location.latitude" class="uk-input"/>-->
+<!--      </div>-->
+<!--      <button class="uk-button uk-button-danger" @click="send_update">onovyti</button>-->
+<!--    </div>-->
     <div v-if="order">
       <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ this.location }}</h2>
       <div uk-grid>
