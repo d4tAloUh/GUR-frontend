@@ -49,6 +49,9 @@ export const getters = {
   isSettedUp: (state) => {
     return (state.user) && state.user.tel_num !== '' && state.user.first_name !== ''
   },
+  isCourier: (state) => {
+    return (state.user) && state.user.is_courier
+  },
   getUser: state => {
     if (state.user)
       return state.user
@@ -93,7 +96,7 @@ export const actions = {
   },
   async getUser({commit}, as_courier) {
     let url = '/user-profile'
-    if (as_courier){
+    if (as_courier) {
       url = '/courier-profile'
     }
     await this.$axios.get(

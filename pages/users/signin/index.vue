@@ -17,7 +17,7 @@
               <legend class="uk-legend">Увійти</legend>
               <div class="uk-align-right">
                 <ToggleButton ton label-enable-text="Кур'єр" label-disable-text="Користувач"
-                             v-on:change="update_as_courier" v-bind:default-state="as_courier"
+                              v-on:change="update_as_courier" v-bind:default-state="as_courier"
                 />
               </div>
               <div class="uk-margin">
@@ -84,12 +84,19 @@ export default {
             this.$toast.info("Спочатку треба закінчити реєстрацію", {
               toastClassName: ['uk-margin-top']
             })
-            await this.$router.push('/users/register/next')
+            if (this.isCourier) {
+              await this.$router.push('/courier/register/')
+            } else {
+              await this.$router.push('/users/register/next')
+            }
           } else {
-            await this.syncCart()
-            await this.$router.push('/restaurant')
+            if (this.isCourier) {
+              await this.$router.push('/courier/profile')
+            } else {
+              await this.syncCart()
+              await this.$router.push('/restaurant')
+            }
           }
-
         } catch (err) {
           this.loading = false
           await this.logout()
@@ -122,7 +129,8 @@ export default {
   computed: {
     ...mapGetters({
       currentUser: 'authorization/getUser',
-      finishedRegistration: 'authorization/isSettedUp'
+      finishedRegistration: 'authorization/isSettedUp',
+      isCourier: 'authorization/isCourier'
     })
   }
 }

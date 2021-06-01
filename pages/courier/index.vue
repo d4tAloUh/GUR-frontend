@@ -27,10 +27,18 @@ export default {
       longitude: 2
     }
   }),
+  async beforeMount() {
+    try {
+      let response = await this.$axios.$get('/courier/orders/current');
+    } catch (e) {
+      console.log(e)
+    }
+  },
   async mounted() {
+    // await
     await this.connectSocket();
   },
-  methods : {
+  methods: {
     async connectSocket() {
       const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
       this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/courier/location");

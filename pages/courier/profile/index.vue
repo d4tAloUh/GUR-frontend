@@ -1,12 +1,10 @@
 <template>
-  <div>
-    Coruier register
-  </div>
+  <div>courier profile</div>
 </template>
 
 <script>
 export default {
-  name: "courier_register"
+  name: "courier_profile"
 }
 </script>
 
