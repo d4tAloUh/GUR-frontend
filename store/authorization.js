@@ -91,13 +91,16 @@ export const actions = {
       commit('retried', false)
     })
   },
-  async getUser({commit}) {
+  async getUser({commit}, as_courier) {
+    let url = '/user-profile'
+    if (as_courier){
+      url = '/courier-profile'
+    }
     await this.$axios.get(
-      '/profile'
+      url
     ).then(user => {
       commit('set_user', user.data)
     })
-
   },
   async refresh({commit, state}) {
     const refresh_token = state.refresh_token

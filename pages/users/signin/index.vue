@@ -15,7 +15,11 @@
             <fieldset class="uk-fieldset">
 
               <legend class="uk-legend">Увійти</legend>
-
+              <div class="uk-align-right">
+                <ToggleButton ton label-enable-text="Кур'єр" label-disable-text="Користувач"
+                             v-on:change="update_as_courier" v-bind:default-state="as_courier"
+                />
+              </div>
               <div class="uk-margin">
                 <label class="uk-form-label">Емейл</label>
                 <input class="uk-input" v-model="username" type="email" placeholder="your.email@gmail.com">
@@ -41,34 +45,37 @@
                   </NuxtLink>
                 </p>
               </div>
-
             </fieldset>
           </form>
-
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
 import {mapMutations, mapActions, mapGetters} from 'vuex'
+import ToggleButton from "~/components/misc/ToggleButton";
 
 export default {
   name: "signin",
+  components: {ToggleButton},
   data: () => ({
     username: '',
     password: '',
     loading: false,
+    as_courier: false
   }),
   methods: {
+    update_as_courier: function (value) {
+      this.as_courier = value
+    },
     async handleSubmit({username, password}) {
       try {
         this.loading = true
         await this.login({username, password})
         try {
-          await this.getUser()
+          await this.getUser(this.as_courier)
           this.loading = false
           this.$toast.success("Ви успішно увійшли в свій аккаунт", {
             toastClassName: ['uk-margin-top']
@@ -78,7 +85,7 @@ export default {
               toastClassName: ['uk-margin-top']
             })
             await this.$router.push('/users/register/next')
-          } else{
+          } else {
             await this.syncCart()
             await this.$router.push('/restaurant')
           }
@@ -92,14 +99,13 @@ export default {
         }
       } catch (err) {
         this.loading = false
-        if (!err.response){
-          this.$toast.error("Не Отримано відповіді від серверу, зачекайте будь ласка" , {
+        if (!err.response) {
+          this.$toast.error("Не Отримано відповіді від серверу, зачекайте будь ласка", {
             toastClassName: ['uk-margin-top']
           })
-        }
-        else{
+        } else {
           console.error(err.response.data)
-          this.$toast.error("Не знайдено такого користувача" , {
+          this.$toast.error("Не знайдено такого користувача", {
             toastClassName: ['uk-margin-top']
           })
         }
@@ -109,8 +115,8 @@ export default {
     ...mapActions({
       login: 'authorization/login',
       getUser: 'authorization/getUser',
-      syncCart : 'cart/syncWithServer',
-      logout:'authorization/logout'
+      syncCart: 'cart/syncWithServer',
+      logout: 'authorization/logout'
     })
   },
   computed: {
