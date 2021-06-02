@@ -128,6 +128,7 @@ export default {
             "delivery_address": this.address
           })
             .then(res => {
+              const order_id = this.order_id
               this.$store.dispatch('cart/finishOrder')
               this.$store.dispatch('cart/setOrder', 0)
               this.$store.dispatch('order/clear')
@@ -135,6 +136,7 @@ export default {
               this.$toast.success("Дякуємо за замовлення", {
                 toastClassName: ['uk-margin-top']
               })
+              this.$router.push('/orders/' + order_id)
             })
             .catch(err => {
               if (!err.response){
