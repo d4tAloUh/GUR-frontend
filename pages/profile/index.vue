@@ -128,8 +128,7 @@ export default {
       get() {
         return this.$store.getters['authorization/admin']
       }
-    }
-    ,
+    },
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
     }

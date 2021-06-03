@@ -16,6 +16,11 @@
 <!--    </div>-->
     <div v-if="order">
       <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ this.location }}</h2>
+      <div v-if="connected">Connected to socket</div>
+      <div v-else>
+        Disconnected
+        <button class="uk-button uk-button-primary" @click="connectSocket">Connect socket</button>
+      </div>
       <div uk-grid>
         <div class="uk-width-1-2@l">
           <div class="uk-card uk-card-default uk-card-body uk-margin">
@@ -93,6 +98,7 @@ export default {
   components: {Loading, OrderStatus},
   middleware: [auth, setted],
   data: () => ({
+    connected: false,
     dishes: [],
     order: null,
     location: {
@@ -141,19 +147,22 @@ export default {
     },
     async connectSocket() {
       const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-      this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/courier/location");
-      this.websocket.onopen = this.connect
-      this.websocket.onmessage = this.recieve
+      this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
+      this.websocket.onopen = this.on_connect
+      this.websocket.onmessage = this.on_message
+      this.websocket.onclose = this.on_disconnect
     },
-    async connect(event) {
+    async on_connect(event) {
       this.websocket.send(JSON.stringify(
         {
           command: "connect_to_order_client",
           order_id: this.$route.params.id,
           token: this.token
         }))
+      this.connected = true
+
     },
-    async recieve(event) {
+    async on_message(event) {
       const data = JSON.parse(event.data)
       switch (data.type){
         case "event.location":{
@@ -162,15 +171,10 @@ export default {
       }
       console.log("received", data)
     },
-    async send_update() {
-      const data = {
-        location: this.location,
-        order_id: this.$route.params.id,
-        token: this.token,
-        command: "update_location"
-      }
-      this.websocket.send(JSON.stringify(data))
-    }
+    async on_disconnect(event) {
+      console.log("Disconnected", event)
+      this.connected = false
+    },
   },
   computed: {
     decimalPrice: function () {
