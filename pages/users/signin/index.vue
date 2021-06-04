@@ -77,15 +77,15 @@ export default {
         try {
           await this.getUser(this.as_courier)
           this.loading = false
-          this.$toast.success("Ви успішно увійшли в свій аккаунт", {
+          this.$toast.success("Ви успішно увійшли в свій аккаунт.", {
             toastClassName: ['uk-margin-top']
           })
           if (!this.finishedRegistration) {
-            this.$toast.info("Спочатку треба закінчити реєстрацію", {
+            this.$toast.info("Спочатку необхідно закінчити реєстрацію.", {
               toastClassName: ['uk-margin-top']
             })
             if (this.isCourier) {
-              await this.$router.push('/courier/register/')
+              await this.$router.push('/courier/register/next')
             } else {
               await this.$router.push('/users/register/next')
             }

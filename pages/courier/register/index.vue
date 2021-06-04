@@ -88,7 +88,7 @@ export default {
           })
         else {
           if (err.response['data'].email) {
-            this.$toast.warning("Вже існує користувач з таким емейлом.", {
+            this.$toast.warning("Вже існує кур'єр з таким емейлом.", {
               toastClassName: ['uk-margin-top']
             })
           } else {
