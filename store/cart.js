@@ -22,6 +22,7 @@ export const mutations = {
       state.rest_id = 0
     Cookies.set('rest_id', state.rest_id)
   },
+
   increaseQuantity(state, record) {
     record.quantity++
     Cookies.set('cart', state.items)
@@ -62,20 +63,21 @@ export const actions = {
             commit('setRestId', res.dishes[0].restaurant_id)
           } else
             commit('setItems', [])
-
-        })
-        .catch(err => {
-          if (!err.status)
-            console.error(err)
-          else
-            console.error(err.response)
         })
     }
   },
   async addItem({commit, state, dispatch}, item) {
     if (item.restaurant_id !== state.rest_id && Number(state.rest_id) !== 0)
       return Promise.reject("Adding dish from other restaurant")
-    await dispatch('syncWithServer')
+    try {
+      await dispatch('syncWithServer')
+    } catch (err) {
+      if (!err.status)
+        console.error(err)
+      else
+        console.error(err.response)
+      return Promise.reject("Error syncing with server")
+    }
 
     const record = state.items.find(i => i.dish_id === item.dish_id)
     // This item exists in items
@@ -132,8 +134,8 @@ export const actions = {
 
     this.$axios.$delete('/order-dishes/' + state.order_id + '/' + item.dish_id)
       .then(response => {
-      commit('delete', item)
-    })
+        commit('delete', item)
+      })
       .catch(err => {
         // commit('addNotExistingItem', item)
         console.error(err.response)

@@ -22,11 +22,13 @@ export default function ({store, $axios, redirect}) {
           const refreshToken = store.getters['authorization/getToken']
           if (refreshToken === null && refresh_token !== "null") {
             if (store.getters['authorization/tried']) {
+
               await store.dispatch('authorization/logout')
               await store.dispatch('order/clear')
               await store.dispatch('cart/finishOrder')
               await store.dispatch('cart/setOrder', 0)
               await store.dispatch('order/setAccepted',false)
+
               return redirect('/')
             } else {
               await store.dispatch('authorization/retried', true)
@@ -34,22 +36,26 @@ export default function ({store, $axios, redirect}) {
                 await store.dispatch('authorization/refresh')
                 return $axios(error.config)
               } catch (e) {
+
                 await store.dispatch('authorization/logout')
                 await store.dispatch('order/clear')
                 await store.dispatch('cart/finishOrder')
                 await store.dispatch('cart/setOrder', 0)
                 await store.dispatch('order/setAccepted',false)
+
                 return redirect('/')
               }
             }
           }
           // There is no refresh token
           else {
+
             await store.dispatch('authorization/logout')
             await store.dispatch('order/clear')
             await store.dispatch('cart/finishOrder')
             await store.dispatch('cart/setOrder', 0)
             await store.dispatch('order/setAccepted',false)
+
             return redirect('/')
           }
         }

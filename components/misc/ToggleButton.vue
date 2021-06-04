@@ -43,9 +43,6 @@ export default {
     }
   },
   computed: {
-    // currentState() {
-    //     return this.defaultState;
-    // },
     isActive() {
       return this.currentState;
     },

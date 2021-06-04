@@ -49,12 +49,18 @@ export const getters = {
   isSettedUp: (state) => {
     return (state.user) && state.user.tel_num !== '' && state.user.first_name !== ''
   },
+  isCourier: (state) => {
+    return (state.user) && state.user.is_courier
+  },
   getUser: state => {
     if (state.user)
       return state.user
   },
   getToken: (state) => {
     return state.refresh_token
+  },
+  getAccessToken: (state) => {
+    return state.access_token
   },
   tried: (state) => {
     return state.retry
@@ -88,13 +94,16 @@ export const actions = {
       commit('retried', false)
     })
   },
-  async getUser({commit}) {
+  async getUser({commit}, as_courier) {
+    let url = '/user-profile'
+    if (as_courier) {
+      url = '/courier-profile'
+    }
     await this.$axios.get(
-      '/profile'
+      url
     ).then(user => {
       commit('set_user', user.data)
     })
-
   },
   async refresh({commit, state}) {
     const refresh_token = state.refresh_token

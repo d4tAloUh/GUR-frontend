@@ -25,30 +25,34 @@
                 <label class="uk-form-label uk-text-bold" for="tel_num">Ваш номер телефону</label>
                 <div class="uk-form-controls">
                   <input class="uk-input" id="tel_num" type="tel" placeholder="380.." v-model="tel_num"
-                         :disabled=!update_profile required maxlength="12" >
+                         :disabled=!update_profile required maxlength="12">
                 </div>
               </div>
             </fieldset>
             <button class="uk-button uk-button-default uk-align-right green" v-if="update_profile">Змінити</button>
           </form>
+        </div>
 
+        <div v-if="partial_admin || admin">
+          <NuxtLink to="/admin" class="uk-text-center uk-button uk-button-primary uk-align-center uk-width-1-2">Панель
+            адміну
+          </NuxtLink>
         </div>
-        <div v-if="partial_admin">
-          <NuxtLink to="/admin" class="uk-text-center uk-button uk-button-primary uk-align-center uk-width-1-2">Панель адміну</NuxtLink>
-        </div>
+
       </div>
       <div class="uk-width-expand">
         <div class="uk-card uk-card-default uk-card-body uk-margin">
           <h3 class="uk-text-center">Ваші замовлення</h3>
           <div v-if="$fetchState.pending">
-            <Loading />
+            <Loading/>
           </div>
           <template v-else v-for="order in orders">
             <div class="uk-card uk-card-default uk-margin" :key="order.order_id">
               <div class="uk-card-body">
                 <h3>Замовлення № {{ order.order_id }}</h3>
                 <div>
-                  <OrderStatusTitle v-bind:status=order.order_status.status />
+                  <OrderStatusTitle v-bind:status=order.order_status.status>
+                  </OrderStatusTitle>
                 </div>
                 <div class="uk-width-expand">
                   <p class="uk-text-meta uk-margin-remove-top">
@@ -56,7 +60,7 @@
                   </p>
                 </div>
                 <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
-                <div >Адреса доставки: {{ order.delivery_address }}</div>
+                <div>Адреса доставки: {{ order.delivery_address }}</div>
 
                 <div class="uk-margin-top">
                   <NuxtLink :to="{ name: 'orders-id', params: { id: order.order_id }}" tag="a"
@@ -87,15 +91,17 @@ import _ from 'lodash'
 
 export default {
   name: "index",
-  components: {Loading, ToggleButton,OrderStatusTitle},
+  components: {Loading, ToggleButton, OrderStatusTitle},
   middleware: [auth, setted],
   data: () => ({
     update_profile: false,
     orders: [],
+    websocket: null
   }),
   async fetch() {
     await this.retrieve_orders();
   },
+
   computed: {
     first_name: {
       get() {
@@ -113,9 +119,14 @@ export default {
         this.$store.dispatch('authorization/do_set_tel_num', value)
       }
     },
-    partial_admin:{
+    partial_admin: {
       get() {
         return this.$store.getters['authorization/partial_admin']
+      }
+    },
+    admin: {
+      get() {
+        return this.$store.getters['authorization/admin']
       }
     },
     decimalPrice: function () {
@@ -128,13 +139,12 @@ export default {
         this.orders = await this.$axios.$get('/user-orders');
         console.log(this.orders)
       } catch (err) {
-        if (!err.response){
+        if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']
           })
           console.error(err)
-        }
-        else{
+        } else {
           this.$toast.error("Сталася помилка, коли отримували ваши замовлення", {
             toastClassName: ['uk-margin-top']
           })
@@ -146,7 +156,7 @@ export default {
     update_profile_method: function (value) {
       this.update_profile = value
     },
-    send_update:_.debounce( async function () {
+    send_update: _.debounce(async function () {
       try {
         await this.$axios.$put('/profile', {
           "first_name": this.first_name,
@@ -158,13 +168,12 @@ export default {
         this.update_profile = false
       } catch (err) {
         this.update_profile = false
-        if (!err.response){
+        if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']
           })
           console.error(err)
-        }
-        else{
+        } else {
           this.$toast.error(err.response.data.tel_num[0] || "Сталася помилка, під час оновлення вашого профілю", {
             toastClassName: ['uk-margin-top']
           })
@@ -172,8 +181,9 @@ export default {
         }
 
       }
-    },2000,{leading:true, trailing:false})
-  }
+    }, 2000, {leading: true, trailing: false})
+  },
+
 }
 </script>
 

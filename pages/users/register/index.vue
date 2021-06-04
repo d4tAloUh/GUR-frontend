@@ -39,6 +39,14 @@
                   </NuxtLink>
                 </p>
               </div>
+              <div class="uk-margin">
+                <p>
+                  Хочете зареєструватися як кур'єр?
+                  <NuxtLink :to="{ path: '/courier/register'}" exact>
+                    Реєстрація
+                  </NuxtLink>
+                </p>
+              </div>
             </fieldset>
           </form>
 

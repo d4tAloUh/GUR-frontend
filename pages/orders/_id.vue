@@ -4,7 +4,12 @@
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
     <div v-if="order">
-      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }}</h2>
+      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ this.location }}</h2>
+      <div v-if="connected">Connected to socket</div>
+      <div v-else>
+        Disconnected
+        <button class="uk-button uk-button-primary" @click="connectSocket">Connect socket</button>
+      </div>
       <div uk-grid>
         <div class="uk-width-1-2@l">
           <div class="uk-card uk-card-default uk-card-body uk-margin">
@@ -15,7 +20,7 @@
               </p>
             </div>
             <div>
-              <OrderStatus v-bind:statuses=order.order_status />
+              <OrderStatus v-bind:statuses=order.order_status></OrderStatus>
             </div>
             <div>
               <p>Ресторан: {{ order.restaurant.name }}</p>
@@ -79,14 +84,22 @@ import setted from "@/middleware/setted";
 
 export default {
   name: "Order_detail",
-  components: {Loading,OrderStatus},
+  components: {Loading, OrderStatus},
   middleware: [auth, setted],
   data: () => ({
+    connected: false,
     dishes: [],
-    order: null
+    order: null,
+    location: {
+      latitude: 1,
+      longitude: 2
+    }
   }),
   async beforeMount() {
     await this.getDetails();
+  },
+  async mounted() {
+    await this.connectSocket();
   },
   methods: {
     async getDetails() {
@@ -99,13 +112,12 @@ export default {
       } catch (err) {
 
         this.loading = false
-        if (!err.response){
+        if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']
           })
           console.error(err)
-        }
-        else{
+        } else {
           if (Number(err.response.status) === 403 || Number(err.response.status) === 404) {
             this.$toast.error("Такого замовлення не існує", {
               toastClassName: ['uk-margin-top']
@@ -122,10 +134,45 @@ export default {
         }
       }
     },
+    async connectSocket() {
+      const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+      this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
+      this.websocket.onopen = this.on_connect
+      this.websocket.onmessage = this.on_message
+      this.websocket.onclose = this.on_disconnect
+    },
+    async on_connect(event) {
+      this.websocket.send(JSON.stringify(
+        {
+          command: "connect_to_order_client",
+          order_id: this.$route.params.id,
+          token: this.token
+        }))
+      this.connected = true
+
+    },
+    async on_message(event) {
+      const data = JSON.parse(event.data)
+      switch (data.type){
+        case "event.location":{
+          this.location = data.content
+        }
+      }
+      console.log("received", data)
+    },
+    async on_disconnect(event) {
+      console.log("Disconnected", event)
+      this.connected = false
+    },
   },
   computed: {
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
+    },
+    token: {
+      get() {
+        return this.$store.getters['authorization/getAccessToken']
+      }
     }
   }
 }

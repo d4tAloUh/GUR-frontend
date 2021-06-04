@@ -46,16 +46,19 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+  server: {
+    host: "0.0.0.0"
+  },
   //https://axios.nuxtjs.org/setup/
   axios: {
-    baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api',
-    browserBaseURL: process.env.browserBaseURL || 'http://127.0.0.1:8000/api',
+    baseURL: process.env.baseURL || 'http://192.168.31.11:8000/api',
+    browserBaseURL: process.env.browserBaseURL || 'http://192.168.31.11:8000/api',
     debug: true,
     proxy: true
   },
-  proxy: {
-    '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
-  },
+  // proxy: {
+  //   '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
+  // },
   loaders:
     {
       vue: {

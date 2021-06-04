@@ -7,7 +7,7 @@
 
       <div class="uk-margin">
         <label>Назва страви</label>
-        <input type="text" name="name" v-model="dish.name " required class="uk-input"
+        <input type="text" name="name" v-model="dish.name" required class="uk-input"
                v-bind:class="(dish.name.length===0)?'uk-form-danger':'uk-form-success'"/>
       </div>
       <div class="uk-margin">
@@ -34,6 +34,7 @@
         <button class="uk-button uk-button-success" @click="post_create" v-if="to_create">Створити</button>
         <button class="uk-button uk-button-primary" @click="post_update" v-else>Змінити</button>
       </div>
+
     </fieldset>
   </div>
 </template>
@@ -64,7 +65,7 @@ export default {
   },
   methods: {
     post_create: _.debounce(async function () {
-      await this.$axios.post('/restaurant-dishes/0', {
+      await this.$axios.post('/restaurant-dishes-exact/0', {
         name: this.dish.name,
         dish_photo: this.dish.dish_photo,
         restaurant_id: this.rest_id,
@@ -95,7 +96,7 @@ export default {
 
     }, 2000, {leading: true, trailing: false}),
     post_update: _.debounce(async function () {
-      await this.$axios.$put('/restaurant-dishes/' + this.dish.dish_id, {
+      await this.$axios.$put('/restaurant-dishes-exact/' + this.dish.dish_id, {
         name: this.dish.name,
         dish_photo: this.dish.dish_photo,
         restaurant_id: this.rest_id,
@@ -128,7 +129,7 @@ export default {
         })
     }, 2000, {leading: true, trailing: false}),
     post_delete: async function () {
-      await this.$axios.$delete('/restaurant-dishes/' + this.dish.dish_id, {
+      await this.$axios.$delete('/restaurant-dishes-exact/' + this.dish.dish_id, {
         data: {
           'dish_id': this.dish.dish_id
         }

@@ -121,11 +121,14 @@ export default {
           await this.$axios.$put('/orders', {
             "order_id": this.order_id,
             "order_details": this.order_details,
-            "longitude": this.order_location[0],
-            "latitude": this.order_location[1],
+            "delivery_location":{
+              "longitude": this.order_location[0],
+              "latitude": this.order_location[1],
+            },
             "delivery_address": this.address
           })
             .then(res => {
+              const order_id = this.order_id
               this.$store.dispatch('cart/finishOrder')
               this.$store.dispatch('cart/setOrder', 0)
               this.$store.dispatch('order/clear')
@@ -133,6 +136,7 @@ export default {
               this.$toast.success("Дякуємо за замовлення", {
                 toastClassName: ['uk-margin-top']
               })
+              this.$router.push('/orders/' + order_id)
             })
             .catch(err => {
               if (!err.response){
