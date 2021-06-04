@@ -46,12 +46,15 @@ export default {
   },
   methods: {
     async connectSocket() {
-      const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-      this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/courier");
-      this.websocket.onopen = this.on_connect
-      this.websocket.onclose = this.on_disconnect
+      if (this.order_exists){
+        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+        this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/courier");
+        this.websocket.onopen = this.on_connect
+        this.websocket.onclose = this.on_disconnect
+      }
     },
     async send_update() {
+      console.log(this.order_id)
       if (this.order_id) {
         const data = {
           location: this.location,
@@ -82,7 +85,8 @@ export default {
     ...mapGetters({
       order_id: 'courier/order_id',
       token: 'authorization/getAccessToken',
-      courier_working :'courier/courier_working'
+      courier_working :'courier/courier_working',
+      order_exists: 'courier/order_exists'
     })
   }
 }

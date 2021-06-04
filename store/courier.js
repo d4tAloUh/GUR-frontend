@@ -16,6 +16,9 @@ export const getters = {
   order_id: (state) => {
     return state.order.order_id
   },
+  order_exists: (state) => {
+    return !!state.order
+  },
   courier_working: (state) => {
     return state.courier_working
   },
