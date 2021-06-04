@@ -40,7 +40,7 @@
               <div class="uk-margin">
                 <p>
                   Не маєте аккаунту?
-                  <NuxtLink :to="{ path: '/users/register'}" exact>
+                  <NuxtLink :to="{ path: '/courier/register'}" exact>
                     Реєстрація
                   </NuxtLink>
                 </p>
@@ -64,7 +64,7 @@ export default {
     username: '',
     password: '',
     loading: false,
-    as_courier: false
+    as_courier: true
   }),
   methods: {
     update_as_courier: function (value) {

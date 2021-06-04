@@ -14,7 +14,7 @@
           <form @submit.stop.prevent="handleSubmit">
             <fieldset class="uk-fieldset">
 
-              <legend class="uk-legend">Реєстрація</legend>
+              <legend class="uk-legend">Реєстрація користувача</legend>
 
               <div class="uk-margin">
                 <label class="uk-form-label" for="email-id">Емейл</label>
@@ -77,24 +77,24 @@ export default {
             "password": this.password
           });
         this.loading = false;
-        this.$toast.success("Успішна реєстрація, увійдіть у аккаунт", {
+        this.$toast.success("Успішна реєстрація, увійдіть у аккаунт.", {
           toastClassName: ['uk-margin-top']
         })
         await this.$router.push('/users/signin')
       } catch (err) {
         this.loading = false;
         if (!err.response)
-          this.$toast.warning("Помилка мережі", {
+          this.$toast.warning("Помилка мережі.", {
             toastClassName: ['uk-margin-top']
           })
         else {
           if (err.response['data'].email) {
-            this.$toast.warning("Вже існує користувач з таким емейлом", {
+            this.$toast.warning("Вже існує користувач з таким емейлом.", {
               toastClassName: ['uk-margin-top']
             })
           } else {
             console.error(err.response)
-            this.$toast.warning("Сталася помилка", {
+            this.$toast.warning("Сталася помилка.", {
               toastClassName: ['uk-margin-top']
             })
           }
