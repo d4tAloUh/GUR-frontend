@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-card uk-card-default uk-margin" >
+  <div class="uk-card uk-card-default uk-margin">
     <div class="uk-card-body">
       <h3>Замовлення № {{ order.order_id }}</h3>
       <div class="uk-width-expand">
@@ -21,6 +21,31 @@ export default {
   computed: {
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
+    }
+  },
+  methods: {
+    acceptOrder: async function (order_id) {
+      try {
+        const response = await this.$axios.$put('/courier/orders', {
+          order_id,
+          'courier_location': {
+            latitude: 1,
+            longitude: 2
+          }
+        });
+      } catch (err) {
+        if (!err.response) {
+          this.$toast.error("Помилка мережі", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err)
+        } else {
+          this.$toast.error("Сталася помилка, коли отримували вільні замовлення", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err.response)
+        }
+      }
     }
   }
 }

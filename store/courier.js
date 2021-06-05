@@ -14,7 +14,8 @@ export const mutations = {
 
 export const getters = {
   order_id: (state) => {
-    return state.order.order_id
+    if (state.order)
+      return state.order.order_id
   },
   order_exists: (state) => {
     return !!state.order
