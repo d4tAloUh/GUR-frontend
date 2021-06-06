@@ -50,7 +50,7 @@
           <NuxtLink :to="{ name: 'restaurant-id', params: { id: currentRestId }}" tag="a">Повернутись до ресторану
           </NuxtLink>
         </div>
-        <div>Або <a @click="clearCart"> видалити </a> попереднє замовлення</div>
+          <div>Або <a @click="clearCart"> видалити </a> попереднє замовлення</div>
       </div>
     </div>
     <div v-else>

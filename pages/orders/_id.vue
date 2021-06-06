@@ -4,7 +4,7 @@
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
     <div v-if="order">
-      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ this.location }}</h2>
+      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ order.location }}</h2>
       <div v-if="connected">Connected to socket</div>
       <div v-else>
         Disconnected
@@ -90,16 +90,10 @@ export default {
     connected: false,
     dishes: [],
     order: null,
-    location: {
-      latitude: 1,
-      longitude: 2
-    }
+    interval: null
   }),
   async beforeMount() {
     await this.getDetails();
-  },
-  async mounted() {
-    await this.connectSocket();
   },
   methods: {
     async getDetails() {
@@ -109,8 +103,10 @@ export default {
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order
+        if (this.order.location) {
+          await this.connectSocket();
+        }
       } catch (err) {
-
         this.loading = false
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -135,11 +131,14 @@ export default {
       }
     },
     async connectSocket() {
-      const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-      this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
-      this.websocket.onopen = this.on_connect
-      this.websocket.onmessage = this.on_message
-      this.websocket.onclose = this.on_disconnect
+      if (!this.connected){
+        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+        this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
+        this.websocket.onopen = this.on_connect
+        this.websocket.onmessage = this.on_message
+        this.websocket.onclose = this.on_disconnect
+        clearInterval(this.interval)
+      }
     },
     async on_connect(event) {
       this.websocket.send(JSON.stringify(
@@ -153,15 +152,19 @@ export default {
     },
     async on_message(event) {
       const data = JSON.parse(event.data)
-      switch (data.type){
-        case "event.location":{
-          this.location = data.content
+      switch (data.type) {
+        case "event.location": {
+          this.order.location = data.content
+          break
+        }
+        case "event.orderstatus": {
+          this.order.order_status.push(JSON.parse(data.content))
+          break
         }
       }
-      console.log("received", data)
     },
     async on_disconnect(event) {
-      console.log("Disconnected", event)
+      this.interval = setInterval(this.connectSocket, 2000)
       this.connected = false
     },
   },
