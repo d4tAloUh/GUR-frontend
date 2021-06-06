@@ -4,14 +4,6 @@
 
     <div v-if="order_exists">
       <div>Order id is {{ order_id }}</div>
-      <div class="uk-margin">
-        <label>longitude</label>
-        <input type="text" name="location" v-model="location.longitude" class="uk-input"/>
-      </div>
-      <div class="uk-margin">
-        <label>latitude</label>
-        <input type="text" name="location" v-model="location.latitude" class="uk-input"/>
-      </div>
       <button class="uk-button uk-button-primary" @click="send_update">Відправити локацію</button>
       <button class="uk-button green" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger" @click="cancel_order">Відмінити замовлення</button>
@@ -27,19 +19,29 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
-  data: () => ({
-    location: {
-      latitude: 1,
-      longitude: 2
-    }
+  data : () => ({
+    interval: null
   }),
   async beforeMount() {
     try {
       let response = await this.$axios.$get('/courier/orders/current');
       await this.saveOrder(response.order)
-    } catch (e) {
-      console.log(e)
+    } catch (err) {
+      if (!err.response) {
+        this.$toast.error("Помилка мережі", {
+          toastClassName: ['uk-margin-top']
+        })
+        console.error(err)
+      } else {
+        this.$toast.error("Сталася помилка, коли отримували поточне замовлення", {
+          toastClassName: ['uk-margin-top']
+        })
+        console.error(err.response)
+      }
     }
+  },
+  mounted() {
+    this.interval = setInterval(this.send_update, 5000)
   },
   methods: {
     async send_update() {
@@ -126,6 +128,7 @@ export default {
     }),
     async clear_order() {
       await this.saveOrder(null)
+      clearInterval(this.interval)
       this.$toast.info("Дякуємо за доставлене замовлення", {
         toastClassName: ['uk-margin-top']
       })
@@ -136,6 +139,7 @@ export default {
       order_id: 'courier/order_id',
       order_exists: 'courier/order_exists',
       courier_working: 'courier/courier_working',
+      location: 'courier/courier_location'
     })
   }
 }

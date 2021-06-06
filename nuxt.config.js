@@ -40,7 +40,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/axios',
-    "vue-toastification/nuxt",
+    {src: "vue-toastification/nuxt", ssr: false},
     '@nuxtjs/proxy'
   ],
 

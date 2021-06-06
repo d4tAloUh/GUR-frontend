@@ -90,6 +90,7 @@ export default {
     connected: false,
     dishes: [],
     order: null,
+    interval: null
   }),
   async beforeMount() {
     await this.getDetails();
@@ -130,11 +131,14 @@ export default {
       }
     },
     async connectSocket() {
-      const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-      this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
-      this.websocket.onopen = this.on_connect
-      this.websocket.onmessage = this.on_message
-      this.websocket.onclose = this.on_disconnect
+      if (!this.connected){
+        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+        this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
+        this.websocket.onopen = this.on_connect
+        this.websocket.onmessage = this.on_message
+        this.websocket.onclose = this.on_disconnect
+        clearInterval(this.interval)
+      }
     },
     async on_connect(event) {
       this.websocket.send(JSON.stringify(
@@ -158,10 +162,9 @@ export default {
           break
         }
       }
-      console.log("received", data)
     },
     async on_disconnect(event) {
-      console.log("Disconnected", event)
+      this.interval = setInterval(this.connectSocket, 2000)
       this.connected = false
     },
   },

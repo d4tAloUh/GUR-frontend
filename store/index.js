@@ -10,9 +10,11 @@ export const actions = {
     let cart = []
     let location = []
     let address = null
+    let courier_working = null
 
     if (req && req.headers && req.headers.cookie) {
       const parsed = cookieparser.parse(req.headers.cookie)
+      courier_working = (parsed.courier_working) || false
       cart = (parsed.cart !== "undefined") && (parsed.cart !== undefined) && (parsed.cart) && JSON.parse(parsed.cart) || []
       user = (parsed.user) && JSON.parse(parsed.user) || null
       rest_id = (parsed.rest_id) || null
@@ -29,6 +31,7 @@ export const actions = {
     commit('authorization/set_payload', {refresh_token})
     commit('order/setAddress', address)
     commit('order/setLocation', location)
+    commit('courier/set_courier_working', Boolean(courier_working))
 
     if (refresh_token && refresh_token !== "null") {
       try {

@@ -15,24 +15,32 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   name: "CourierOrder",
   props: ["order"],
   computed: {
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
-    }
+    },
+    ...mapGetters({
+      courier_location: 'courier/courier_location'
+    })
   },
+
   methods: {
+    ...mapActions({
+      saveOrder: 'courier/do_set_order'
+    }),
     acceptOrder: async function (order_id) {
       try {
         const response = await this.$axios.$put('/courier/orders', {
           order_id,
-          'courier_location': {
-            latitude: 1,
-            longitude: 2
-          }
+          courier_location: this.courier_location
         });
+        console.log(response)
+        await this.saveOrder(response)
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -40,7 +48,7 @@ export default {
           })
           console.error(err)
         } else {
-          this.$toast.error("Сталася помилка, коли отримували вільні замовлення", {
+          this.$toast.error(err.response.data.error || "Сталася помилка, коли отримували вільні замовлення", {
             toastClassName: ['uk-margin-top']
           })
           console.error(err.response)
