@@ -38,14 +38,13 @@ export default {
   methods: {
     send_update: _.debounce(async function () {
       try {
-        await this.$axios.$put('/courier', {
+        await this.$axios.$put('/courier-profile', {
           "first_name": this.first_name,
           "tel_num": this.tel_num
         });
         this.$toast.success("Ви успішно зарєструвалися.", {
           toastClassName: ['uk-margin-top']
         })
-        // await this.$store.dispatch('cart/syncWithServer')
         await this.$router.push('/courier/profile')
       } catch (err) {
         if (!err.response)

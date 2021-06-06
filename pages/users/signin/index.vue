@@ -91,7 +91,7 @@ export default {
             }
           } else {
             if (this.isCourier) {
-              await this.$router.push('/courier/profile')
+              await this.$router.push('/courier/index')
             } else {
               await this.syncCart()
               await this.$router.push('/restaurant')
@@ -100,7 +100,7 @@ export default {
         } catch (err) {
           this.loading = false
           await this.logout()
-          this.$toast.error(err.response.data || "Сталася помилка.", {
+          this.$toast.error(err.response.data || "Сталася помилка, коли отримували ваш профіль", {
             toastClassName: ['uk-margin-top']
           })
         }

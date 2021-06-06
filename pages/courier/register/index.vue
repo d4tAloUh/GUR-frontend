@@ -33,7 +33,7 @@
               <div class="uk-margin">
                 <p>
                   Вже маєте аккаунт?
-                  <NuxtLink :to="{ path: '/courier/signin'}" exact>
+                  <NuxtLink :to="{ path: '/users/signin'}" exact>
                     Увійти
                   </NuxtLink>
                 </p>
@@ -79,7 +79,7 @@ export default {
         this.$toast.success("Успішна реєстрація, увійдіть у аккаунт.", {
           toastClassName: ['uk-margin-top']
         })
-        await this.$router.push('/courier/signin')
+        await this.$router.push('/users/signin')
       } catch (err) {
         this.loading = false;
         if (!err.response)

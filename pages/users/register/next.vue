@@ -38,7 +38,7 @@ export default {
   methods: {
     send_update: _.debounce(async function () {
       try {
-        await this.$axios.$put('/profile', {
+        await this.$axios.$put('/user-profile', {
           "first_name": this.first_name,
           "tel_num": this.tel_num
         });
