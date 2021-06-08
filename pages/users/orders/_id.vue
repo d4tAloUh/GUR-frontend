@@ -77,10 +77,10 @@
 </template>
 
 <script>
-import auth from "@/middleware/auth";
-import Loading from "@/components/misc/LoadingBar";
-import OrderStatus from "@/components/misc/OrderStatus";
-import setted from "@/middleware/setted";
+import auth from "~/middleware/auth";
+import Loading from "~/components/misc/LoadingBar";
+import OrderStatus from "~/components/misc/OrderStatus";
+import setted from "~/middleware/setted";
 
 export default {
   name: "Order_detail",
@@ -114,7 +114,7 @@ export default {
           })
           console.error(err)
         } else {
-          if (Number(err.response.status) === 403 || Number(err.response.status) === 404) {
+          if (Number(err.response.status) === 404) {
             this.$toast.error("Такого замовлення не існує", {
               toastClassName: ['uk-margin-top']
             })

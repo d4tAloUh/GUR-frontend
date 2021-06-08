@@ -78,11 +78,11 @@
 </template>
 
 <script>
-import Cart from "@/components/cart/Cart";
+import Cart from "~/components/cart/Cart";
 import {mapActions, mapGetters} from "vuex";
-import auth from "@/middleware/auth";
+import auth from "~/middleware/auth";
 import Uikit from 'uikit'
-import setted from "@/middleware/setted";
+import setted from "~/middleware/setted";
 
 
 export default {
@@ -136,7 +136,7 @@ export default {
               this.$toast.success("Дякуємо за замовлення", {
                 toastClassName: ['uk-margin-top']
               })
-              this.$router.push('/orders/' + order_id)
+              this.$router.push('/users/orders/' + order_id)
             })
             .catch(err => {
               if (!err.response){
