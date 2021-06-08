@@ -64,10 +64,10 @@
                 <div>Адреса доставки: {{ order.delivery_address }}</div>
 
                 <div class="uk-margin-top">
-                  <NuxtLink :to="{ name: 'users-orders-id', params: { id: order.order_id }}" tag="a"
+                  <NuxtLink :to="{ name: 'courier-orders-id', params: { id: order.order_id }}" tag="a"
                             class="uk-button uk-button-secondary uk-align-right" v-if="is_courier">Переглянути
                   </NuxtLink>
-                  <NuxtLink :to="{ name: 'courier-orders-id', params: { id: order.order_id }}" tag="a"
+                  <NuxtLink :to="{ name: 'users-orders-id', params: { id: order.order_id }}" tag="a"
                             class="uk-button uk-button-secondary uk-align-right" v-else>Переглянути
                   </NuxtLink>
                 </div>
