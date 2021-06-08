@@ -1,5 +1,6 @@
 <template>
   <div>
+    <CourierMap></CourierMap>
       <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
                     v-on:change="set_courier_working" v-bind:default-state="courier_working"
       />
@@ -15,6 +16,7 @@
     </CurrentOrder>
     <div v-else>
       <h3>Вільні замовлення</h3>
+
       <div class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
@@ -35,10 +37,12 @@ import setted from "~/middleware/setted";
 import CourierOrder from "~/components/courier/CourierOrder";
 import {mapGetters} from "vuex";
 import ToggleButton from "~/components/misc/ToggleButton";
+import CourierMap from "~/components/GoogleMaps/CourierMap";
+
 
 export default {
   name: "courier_index",
-  components: {CurrentOrder, CourierOrder,ToggleButton},
+  components: {CurrentOrder, CourierOrder,ToggleButton, CourierMap},
   middleware: [auth, setted],
   data: () => ({
     connected: false,
