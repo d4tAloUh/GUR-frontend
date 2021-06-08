@@ -14,13 +14,13 @@
     <CurrentOrder v-if="order_exists">
     </CurrentOrder>
     <div v-else>
-      <div v-if="!connected">
-        <button @click="connectSocket" class="uk-button-default uk-button">Підключитися</button>
-      </div>
       <h3>Вільні замовлення</h3>
       <div class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
+        <div v-if="available_orders.length === 0">
+          Наразі немає вільних замовлень, зачекайте, будь ласка
+        </div>
       </div>
     </div>
   </div>

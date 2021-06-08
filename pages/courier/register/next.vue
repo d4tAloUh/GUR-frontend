@@ -45,7 +45,7 @@ export default {
         this.$toast.success("Ви успішно зарєструвалися.", {
           toastClassName: ['uk-margin-top']
         })
-        await this.$router.push('/courier/profile')
+        await this.$router.push('/profile')
       } catch (err) {
         if (!err.response)
           this.$toast.warning("Помилка мережі.", {
