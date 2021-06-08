@@ -22,9 +22,6 @@
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
       </div>
-      <div v-for="order in orders" :key="order.order_id">
-        {{ haversine_distance(order.delivery_location, {longitude, latitude}) }}
-      </div>
     </div>
   </div>
 </template>
@@ -138,6 +135,7 @@ export default {
       token: 'authorization/getAccessToken',
       courier_working: 'courier/courier_working'
     }),
+
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude
