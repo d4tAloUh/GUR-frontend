@@ -57,7 +57,7 @@ export default {
     retrieve_orders: async function () {
       if (!this.order_exists) {
         try {
-          this.orders = await this.$axios.$get('/courier/orders');
+          this.orders = await this.$axios.$get('/courier/orders/free');
           this.interval = setInterval(this.connectSocket, 2000)
         } catch (err) {
           if (!err.response) {

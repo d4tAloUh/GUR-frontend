@@ -33,14 +33,9 @@
           </li>
 
           <li v-if="userIsDefined">
-            <NuxtLink v-if="isCourier" tag="a" to="/courier/profile" exact class="uk-link-reset">{{
-                user.first_name
-              }}
-            </NuxtLink>
-            <NuxtLink v-else tag="a" to="/profile" exact class="uk-link-reset">{{ user.first_name }}</NuxtLink>
+            <NuxtLink tag="a" to="/profile" exact class="uk-link-reset">{{ user.first_name }}</NuxtLink>
           </li>
           <li v-else>
-            <NuxtLink v-if="isCourier" tag="a" to="/courier/profile" exact class="uk-link-reset">Профіль</NuxtLink>
             <NuxtLink tag="a" to="/profile" exact class="uk-link-reset">Профіль</NuxtLink>
           </li>
           <li><a class="uk-link-reset" @click.prevent="logout">Вийти</a></li>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2 class="uk-text-center">Профіль</h2>
+    <h2 class="uk-text-center" v-if="is_courier">Профіль Кур'єра</h2>
+    <h2 class="uk-text-center" v-else>Профіль</h2>
     <div uk-grid>
       <div class="uk-width-1-3@l">
         <div class="uk-card uk-card-default uk-card-body uk-margin">
@@ -133,6 +134,9 @@ export default {
     retrieve_orders: async function () {
       try {
         let url = '/user-orders'
+        if (this.is_courier){
+          url = '/courier-orders'
+        }
         this.orders = await this.$axios.$get(url);
       } catch (err) {
         if (!err.response) {
