@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2 class="uk-text-center">Профіль</h2>
+    <h2 class="uk-text-center" v-if="is_courier">Профіль Кур'єра</h2>
+    <h2 class="uk-text-center" v-else>Профіль</h2>
     <div uk-grid>
       <div class="uk-width-1-3@l">
         <div class="uk-card uk-card-default uk-card-body uk-margin">
@@ -63,8 +64,11 @@
                 <div>Адреса доставки: {{ order.delivery_address }}</div>
 
                 <div class="uk-margin-top">
-                  <NuxtLink :to="{ name: 'orders-id', params: { id: order.order_id }}" tag="a"
-                            class="uk-button uk-button-secondary uk-align-right">Переглянути
+                  <NuxtLink :to="{ name: 'courier-orders-id', params: { id: order.order_id }}" tag="a"
+                            class="uk-button uk-button-secondary uk-align-right" v-if="is_courier">Переглянути
+                  </NuxtLink>
+                  <NuxtLink :to="{ name: 'users-orders-id', params: { id: order.order_id }}" tag="a"
+                            class="uk-button uk-button-secondary uk-align-right" v-else>Переглянути
                   </NuxtLink>
                 </div>
               </div>
@@ -88,6 +92,7 @@ import OrderStatusTitle from "~/components/misc/OrderStatusTitle";
 import Loading from "@/components/misc/LoadingBar";
 import setted from "@/middleware/setted";
 import _ from 'lodash'
+import {mapGetters} from "vuex";
 
 export default {
   name: "index",
@@ -119,16 +124,11 @@ export default {
         this.$store.dispatch('authorization/do_set_tel_num', value)
       }
     },
-    partial_admin: {
-      get() {
-        return this.$store.getters['authorization/partial_admin']
-      }
-    },
-    admin: {
-      get() {
-        return this.$store.getters['authorization/admin']
-      }
-    },
+    ...mapGetters({
+      partial_admin:'authorization/partial_admin',
+      admin : 'authorization/admin',
+      is_courier: 'authorization/isCourier'
+    }),
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
     }
@@ -136,8 +136,11 @@ export default {
   methods: {
     retrieve_orders: async function () {
       try {
-        this.orders = await this.$axios.$get('/user-orders');
-        console.log(this.orders)
+        let url = '/user-orders'
+        if (this.is_courier){
+          url = '/courier-orders'
+        }
+        this.orders = await this.$axios.$get(url);
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -158,16 +161,18 @@ export default {
     },
     send_update: _.debounce(async function () {
       try {
-        await this.$axios.$put('/profile', {
+        let url = '/user-profile'
+        if (this.is_courier){
+          url = '/courier-profile'
+        }
+        await this.$axios.$put(url, {
           "first_name": this.first_name,
           "tel_num": this.tel_num
         });
         this.$toast.success("Ваш профіль успішно оновлено", {
           toastClassName: ['uk-margin-top']
         })
-        this.update_profile = false
       } catch (err) {
-        this.update_profile = false
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']
@@ -180,10 +185,11 @@ export default {
           console.error(err.response)
         }
 
+      } finally {
+        this.update_profile = false
       }
     }, 2000, {leading: true, trailing: false})
   },
-
 }
 </script>
 

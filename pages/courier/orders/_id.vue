@@ -5,11 +5,6 @@
     </NuxtLink>
     <div v-if="order">
       <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ order.location }}</h2>
-      <div v-if="connected">Connected to socket</div>
-      <div v-else>
-        Disconnected
-        <button class="uk-button uk-button-primary" @click="connectSocket">Connect socket</button>
-      </div>
       <div uk-grid>
         <div class="uk-width-1-2@l">
           <div class="uk-card uk-card-default uk-card-body uk-margin">
@@ -77,20 +72,18 @@
 </template>
 
 <script>
-import auth from "@/middleware/auth";
-import Loading from "@/components/misc/LoadingBar";
-import OrderStatus from "@/components/misc/OrderStatus";
-import setted from "@/middleware/setted";
+import auth from "~/middleware/auth";
+import setted from "~/middleware/setted";
+import Loading from "~/components/misc/LoadingBar";
+import OrderStatus from "~/components/misc/OrderStatus";
 
 export default {
-  name: "Order_detail",
+  name: "courier-order-id",
   components: {Loading, OrderStatus},
   middleware: [auth, setted],
   data: () => ({
-    connected: false,
     dishes: [],
     order: null,
-    interval: null
   }),
   async beforeMount() {
     await this.getDetails();
@@ -99,13 +92,10 @@ export default {
     async getDetails() {
       try {
         this.loading = true
-        let response = await this.$axios.$get('/user-orders-key/' + this.$route.params.id);
+        let response = await this.$axios.$get('/courier-orders-key/' + this.$route.params.id);
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order
-        if (this.order.location) {
-          await this.connectSocket();
-        }
       } catch (err) {
         this.loading = false
         if (!err.response) {
@@ -114,7 +104,7 @@ export default {
           })
           console.error(err)
         } else {
-          if (Number(err.response.status) === 403 || Number(err.response.status) === 404) {
+          if (Number(err.response.status) === 404) {
             this.$toast.error("Такого замовлення не існує", {
               toastClassName: ['uk-margin-top']
             })
@@ -130,53 +120,11 @@ export default {
         }
       }
     },
-    async connectSocket() {
-      if (!this.connected){
-        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-        this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
-        this.websocket.onopen = this.on_connect
-        this.websocket.onmessage = this.on_message
-        this.websocket.onclose = this.on_disconnect
-        clearInterval(this.interval)
-      }
-    },
-    async on_connect(event) {
-      this.websocket.send(JSON.stringify(
-        {
-          command: "connect_to_order_client",
-          order_id: this.$route.params.id,
-          token: this.token
-        }))
-      this.connected = true
-
-    },
-    async on_message(event) {
-      const data = JSON.parse(event.data)
-      switch (data.type) {
-        case "event.location": {
-          this.order.location = data.content
-          break
-        }
-        case "event.orderstatus": {
-          this.order.order_status.push(JSON.parse(data.content))
-          break
-        }
-      }
-    },
-    async on_disconnect(event) {
-      this.interval = setInterval(this.connectSocket, 2000)
-      this.connected = false
-    },
   },
   computed: {
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
     },
-    token: {
-      get() {
-        return this.$store.getters['authorization/getAccessToken']
-      }
-    }
   }
 }
 </script>

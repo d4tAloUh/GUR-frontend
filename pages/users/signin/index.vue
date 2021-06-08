@@ -91,7 +91,7 @@ export default {
             }
           } else {
             if (this.isCourier) {
-              await this.$router.push('/courier/index')
+              await this.$router.push('/courier/')
             } else {
               await this.syncCart()
               await this.$router.push('/restaurant')

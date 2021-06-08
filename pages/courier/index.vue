@@ -1,5 +1,8 @@
 <template>
   <div>
+      <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
+                    v-on:change="set_courier_working" v-bind:default-state="courier_working"
+      />
     <div class="uk-margin">
       <label>longitude</label>
       <input type="text" name="location" v-model="longitude" class="uk-input"/>
@@ -11,16 +14,13 @@
     <CurrentOrder v-if="order_exists">
     </CurrentOrder>
     <div v-else>
-      <div v-if="!connected">
-        <button @click="connectSocket" class="uk-button-default uk-button">Підключитися</button>
-      </div>
       <h3>Вільні замовлення</h3>
       <div class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
-      </div>
-      <div v-for="order in orders" :key="order.order_id">
-        {{ haversine_distance(order.delivery_location, {longitude, latitude}) }}
+        <div v-if="available_orders.length === 0">
+          Наразі немає вільних замовлень, зачекайте, будь ласка
+        </div>
       </div>
     </div>
   </div>
@@ -34,10 +34,11 @@ import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
 import CourierOrder from "~/components/courier/CourierOrder";
 import {mapGetters} from "vuex";
+import ToggleButton from "~/components/misc/ToggleButton";
 
 export default {
   name: "courier_index",
-  components: {CurrentOrder, CourierOrder},
+  components: {CurrentOrder, CourierOrder,ToggleButton},
   middleware: [auth, setted],
   data: () => ({
     connected: false,
@@ -57,7 +58,7 @@ export default {
     retrieve_orders: async function () {
       if (!this.order_exists) {
         try {
-          this.orders = await this.$axios.$get('/courier/orders');
+          this.orders = await this.$axios.$get('/courier/orders/free');
           this.interval = setInterval(this.connectSocket, 2000)
         } catch (err) {
           if (!err.response) {
@@ -123,13 +124,18 @@ export default {
         Math.sin(difflon / 2) * Math.sin(difflon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
+    },
+    set_courier_working: function(value) {
+      this.$store.dispatch('courier/do_set_courier_working', value)
     }
   },
   computed: {
     ...mapGetters({
       order_exists: 'courier/order_exists',
       token: 'authorization/getAccessToken',
+      courier_working: 'courier/courier_working'
     }),
+
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude

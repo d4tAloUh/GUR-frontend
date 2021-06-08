@@ -26,21 +26,10 @@
               </div>
             </NuxtLink>
           </li>
-          <li v-else>
-            <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
-                          v-on:change="set_courier_working" v-bind:default-state="courier_working"
-            />
-          </li>
-
           <li v-if="userIsDefined">
-            <NuxtLink v-if="isCourier" tag="a" to="/courier/profile" exact class="uk-link-reset">{{
-                user.first_name
-              }}
-            </NuxtLink>
-            <NuxtLink v-else tag="a" to="/profile" exact class="uk-link-reset">{{ user.first_name }}</NuxtLink>
+            <NuxtLink tag="a" to="/profile" exact class="uk-link-reset">{{ user.first_name }}</NuxtLink>
           </li>
           <li v-else>
-            <NuxtLink v-if="isCourier" tag="a" to="/courier/profile" exact class="uk-link-reset">Профіль</NuxtLink>
             <NuxtLink tag="a" to="/profile" exact class="uk-link-reset">Профіль</NuxtLink>
           </li>
           <li><a class="uk-link-reset" @click.prevent="logout">Вийти</a></li>
@@ -65,7 +54,7 @@ import ToggleButton from "~/components/misc/ToggleButton";
 
 export default {
   name: "Navbar",
-  components: {ToggleButton},
+
   computed: {
     ...mapGetters({
       isAuthenticated: 'authorization/isAuthenticated',
@@ -76,9 +65,7 @@ export default {
     userIsDefined: function () {
       return (typeof this.user !== 'undefined') && this.user && this.user.first_name && (this.user.first_name !== '')
     },
-    courier_working: function() {
-      return  this.$store.getters['courier/courier_working']
-    },
+
   },
   methods: {
     logout: function () {
@@ -93,9 +80,7 @@ export default {
       })
       this.$router.push('/')
     },
-    set_courier_working: function(value) {
-      this.$store.dispatch('courier/do_set_courier_working', value)
-    }
+
   },
 
 }
