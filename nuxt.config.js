@@ -52,8 +52,8 @@ export default {
   },
   //https://axios.nuxtjs.org/setup/
   axios: {
-    baseURL: process.env.baseURL || 'http://192.168.31.11:8000/api',
-    browserBaseURL: process.env.browserBaseURL || 'http://192.168.31.11:8000/api',
+    baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api',
+    browserBaseURL: process.env.browserBaseURL || 'http://127.0.0.1:8000/api',
     debug: true,
     proxy: true
   },
