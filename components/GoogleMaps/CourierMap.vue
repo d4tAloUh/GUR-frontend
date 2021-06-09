@@ -23,6 +23,9 @@ export default {
       streetViewControl: false
     },
   }),
+  mounted() {
+    this.initializeMarkers()
+  },
   methods: {
     acceptMap(map) {
       this.map = map
