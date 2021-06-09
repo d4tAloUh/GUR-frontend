@@ -66,10 +66,11 @@ import Cart from "~/components/cart/Cart";
 import {mapActions, mapGetters} from 'vuex'
 import auth from "@/middleware/auth";
 import Loading from "@/components/misc/LoadingBar";
+import onlyClient from "~/middleware/onlyClient";
 
 export default {
   name: "rest_id",
-  middleware: [auth],
+  middleware: [auth, onlyClient],
   components: {Cart, Loading},
   data: () => ({
     dishes: [],

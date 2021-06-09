@@ -10,16 +10,19 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.11.4",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/proxy": "^2.1.0",
     "cookieparser": "^0.1.0",
     "core-js": "^3.13.1",
+    "flatted": "^3.1.1",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
     "nuxt": "^2.15.6",
     "uikit": "^3.6.22",
     "vue": "^2.6.12",
     "vue-toastification": "^1.7.11",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "ws": "^7.4.6"
   }
 }

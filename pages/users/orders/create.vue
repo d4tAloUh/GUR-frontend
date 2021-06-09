@@ -83,11 +83,12 @@ import {mapActions, mapGetters} from "vuex";
 import auth from "~/middleware/auth";
 import Uikit from 'uikit'
 import setted from "~/middleware/setted";
+import onlyClient from "~/middleware/onlyClient";
 
 
 export default {
   name: "create",
-  middleware: [auth, setted],
+  middleware: [auth, setted, onlyClient],
   data: () => ({
     address: '',
     predicted_address: '',
