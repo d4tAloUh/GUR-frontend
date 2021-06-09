@@ -19,7 +19,7 @@
       <div class="uk-navbar-right">
         <ul class="uk-navbar-nav" v-if="isAuthenticated">
           <li v-if="!isCourier">
-            <NuxtLink to="/orders/create">
+            <NuxtLink to="/users/orders/create">
               <div class="uk-align-center margin-top">
                 <span uk-icon="cart"></span>
                 <span class="uk-badge badge-on-cart">{{ amountOfFood }}</span>

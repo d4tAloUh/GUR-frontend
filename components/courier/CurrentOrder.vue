@@ -1,8 +1,7 @@
 <template>
   <div>
     <div>Working now: {{ courier_working }}</div>
-
-    <div v-if="order_exists">
+    <div>
       <div>Order id is {{ order_id }}</div>
       <button class="uk-button uk-button-primary" @click="send_update">Відправити локацію</button>
       <button class="uk-button green" @click="finish_order">Доставлено</button>
@@ -19,27 +18,9 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
-  data : () => ({
+  data: () => ({
     interval: null
   }),
-  async beforeMount() {
-    try {
-      let response = await this.$axios.$get('/courier/orders/current');
-      await this.saveOrder(response.order)
-    } catch (err) {
-      if (!err.response) {
-        this.$toast.error("Помилка мережі", {
-          toastClassName: ['uk-margin-top']
-        })
-        console.error(err)
-      } else {
-        this.$toast.error("Сталася помилка, коли отримували поточне замовлення", {
-          toastClassName: ['uk-margin-top']
-        })
-        console.error(err.response)
-      }
-    }
-  },
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
   },

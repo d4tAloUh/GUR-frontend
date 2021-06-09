@@ -18,7 +18,8 @@ export default {
     ]
   },
   env: {
-    google_key: process.env.google_key || 'AIzaSyC5aRn9eeSv9WaTQCucsed0S_-57rETsW0'
+    google_key: process.env.google_key || 'AIzaSyC5aRn9eeSv9WaTQCucsed0S_-57rETsW0',
+    server_url: process.env.server_url || '127.0.0.1:8000'
   },
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [

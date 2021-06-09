@@ -28,7 +28,7 @@
         </tbody>
       </table>
 
-      <NuxtLink tag="button" to="/orders/create" class="uk-button uk-button-primary" name="button">Зробити замовлення
+      <NuxtLink tag="button" to="/users/orders/create" class="uk-button uk-button-primary" name="button">Зробити замовлення
         ({{ decimalPrice(price) }}₴)
       </NuxtLink>
     </div>

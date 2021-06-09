@@ -1,9 +1,8 @@
 <template>
   <div>
-    <CourierMap></CourierMap>
-      <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
-                    v-on:change="set_courier_working" v-bind:default-state="courier_working"
-      />
+    <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
+                  v-on:change="set_courier_working" v-bind:default-state="courier_working"
+    />
     <div class="uk-margin">
       <label>longitude</label>
       <input type="text" name="location" v-model="longitude" class="uk-input"/>
@@ -16,7 +15,11 @@
     </CurrentOrder>
     <div v-else>
       <h3>Вільні замовлення</h3>
-
+      <GoogleMapLoader
+        :mapConfig="mapConfig"
+        :apiKey=google_key
+        :markers=markers
+      />
       <div class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
@@ -35,35 +38,60 @@ import CurrentOrder from "~/components/courier/CurrentOrder";
 import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
 import CourierOrder from "~/components/courier/CourierOrder";
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import ToggleButton from "~/components/misc/ToggleButton";
-import CourierMap from "~/components/GoogleMaps/CourierMap";
-
+import GoogleMapLoader from "~/components/GoogleMaps/GoogleMapLoader";
 
 export default {
   name: "courier_index",
-  components: {CurrentOrder, CourierOrder,ToggleButton, CourierMap},
+  components: {CurrentOrder, CourierOrder, ToggleButton, GoogleMapLoader},
   middleware: [auth, setted],
   data: () => ({
     connected: false,
     orders: [],
     websocket: null,
     max_distance: 3500,
-    interval: null
+    interval: null,
+    mapConfig: {
+      center: {lat: 50.445151, lng: 30.573871},
+      zoom: 13,
+      streetViewControl: false
+    },
   }),
-  async beforeMount() {
-    await this.retrieve_orders();
+  async fetch() {
+    await this.get_active_order()
+    await this.retrieve_orders()
     // navigator.geolocation.getCurrentPosition(position => {
     //   this.latitude = position.coords.latitude
     //   this.longitude = position.coords.longitude
     //   })
   },
+  async mounted() {
+    this.interval = setInterval(this.connectSocket, 2000)
+  },
   methods: {
-    retrieve_orders: async function () {
+    async get_active_order() {
+      try {
+        let response = await this.$axios.$get('/courier/orders/current');
+        await this.saveOrder(response.order)
+      } catch (err) {
+        if (!err.response) {
+          this.$toast.error("Помилка мережі", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err)
+        } else {
+          this.$toast.error("Сталася помилка, коли отримували поточне замовлення", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err.response)
+        }
+      }
+    },
+    async retrieve_orders() {
       if (!this.order_exists) {
         try {
           this.orders = await this.$axios.$get('/courier/orders/free');
-          this.interval = setInterval(this.connectSocket, 2000)
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -105,12 +133,15 @@ export default {
     },
     async connectSocket() {
       if (!this.order_exists) {
-        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-        this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/courier");
-        this.websocket.onopen = this.on_connect
-        this.websocket.onclose = this.on_disconnect
-        this.websocket.onmessage = this.on_message
-        clearInterval(this.interval)
+        if (process.browser) {
+          // const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+          // this.websocket = new WebSocket(ws_scheme + '://' + this.server_url + "/socket/courier");
+          this.websocket = new WebSocket('ws://' + this.server_url + "/socket/courier");
+          this.websocket.onopen = this.on_connect
+          this.websocket.onclose = this.on_disconnect
+          this.websocket.onmessage = this.on_message
+          clearInterval(this.interval)
+        }
       }
     },
     async filter_out_order(order_id) {
@@ -129,9 +160,12 @@ export default {
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     },
-    set_courier_working: function(value) {
+    set_courier_working: function (value) {
       this.$store.dispatch('courier/do_set_courier_working', value)
-    }
+    },
+    ...mapActions({
+      saveOrder: 'courier/do_set_order'
+    }),
   },
   computed: {
     ...mapGetters({
@@ -139,7 +173,20 @@ export default {
       token: 'authorization/getAccessToken',
       courier_working: 'courier/courier_working'
     }),
-
+    google_key: function () {
+      return process.env.google_key
+    },
+    server_url: function () {
+      return process.env.server_url
+    },
+    markers: function () {
+      return this.orders.map((order => {
+        return {
+          id: order.order_id,
+          position: order.restaurant.location
+        }
+      }))
+    },
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude
@@ -161,8 +208,8 @@ export default {
       let latitude = this.latitude;
       let th = this
       return this.orders.filter(function (order) {
-        let distance = th.haversine_distance(order.delivery_location, {longitude, latitude})
-        return distance < 2000
+          let distance = th.haversine_distance(order.delivery_location, {longitude, latitude})
+          return distance < 2000
         }
       )
     },
