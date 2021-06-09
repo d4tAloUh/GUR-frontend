@@ -76,11 +76,12 @@ import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
 import Loading from "~/components/misc/LoadingBar";
 import OrderStatus from "~/components/misc/OrderStatus";
+import onlyCourier from "~/middleware/onlyCourier";
 
 export default {
   name: "courier-order-id",
   components: {Loading, OrderStatus},
-  middleware: [auth, setted],
+  middleware: [auth, setted, onlyCourier],
   data: () => ({
     dishes: [],
     order: null,

@@ -1,5 +1,5 @@
 export default ({store,error}) => {
-  if (!store.getters['authorization/admin']) {
+  if (!store.getters['authorization/isCourier']) {
     return error({ statusCode: 404, message: '' })
   }
 }

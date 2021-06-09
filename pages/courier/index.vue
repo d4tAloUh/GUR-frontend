@@ -15,9 +15,9 @@
     </CurrentOrder>
     <div v-else>
       <h3>Вільні замовлення</h3>
-<!--      <CourierMap-->
-<!--        :apiKey=google_key-->
-<!--        :markers=markers></CourierMap>-->
+      <!--      <CourierMap-->
+      <!--        :apiKey=google_key-->
+      <!--        :markers=markers></CourierMap>-->
       <div class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
@@ -33,6 +33,7 @@
 import CurrentOrder from "~/components/courier/CurrentOrder";
 import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
+import onlyCourier from "~/middleware/onlyCourier";
 import CourierOrder from "~/components/courier/CourierOrder";
 import {mapActions, mapGetters} from "vuex";
 import ToggleButton from "~/components/misc/ToggleButton";
@@ -42,7 +43,7 @@ import CourierMap from "~/components/GoogleMaps/CourierMap";
 export default {
   name: "courier_index",
   components: {CurrentOrder, CourierOrder, ToggleButton, GoogleMapLoader, CourierMap},
-  middleware: [auth, setted],
+  middleware: [auth, setted, onlyCourier],
   data: () => ({
     connected: false,
     orders: [],
@@ -125,7 +126,7 @@ export default {
         }))
     },
     async connectSocket() {
-      if (!this.order_exists) {
+      if (!this.order_exists && this.courier_working) {
         if (process.browser) {
           this.websocket = new WebSocket('ws://' + this.server_url + "/socket/courier");
           this.websocket.onopen = this.on_connect
@@ -200,6 +201,21 @@ export default {
       )
     },
   },
+  watch: {
+    async courier_working(new_val) {
+      if (!new_val && !this.order_exists) {
+        if (this.websocket) {
+          this.websocket.close()
+        }
+        this.connected = false
+        this.interval = setInterval(this.connectSocket, 2000)
+        this.orders = []
+      } else if (!this.order_exists) {
+        await this.get_active_order()
+        await this.retrieve_orders()
+      }
+    }
+  }
 }
 
 </script>
