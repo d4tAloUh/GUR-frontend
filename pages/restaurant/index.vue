@@ -58,10 +58,12 @@ import GoogleMap from "~/components/misc/GoogleMap";
 import {mapGetters} from 'vuex'
 import Restaurant from "@/components/restaurant/Restaurant";
 import _ from 'lodash'
+import onlyClient from "~/middleware/onlyClient";
 
 export default {
   name: "restaurant",
   components: {Restaurant, GoogleMap},
+  middleware:[onlyClient],
   data: () => ({
     restaurantList: [],
   }),

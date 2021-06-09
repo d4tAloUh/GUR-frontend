@@ -32,9 +32,10 @@
 <script>
 import auth from "@/middleware/auth";
 import _ from 'lodash'
+import onlyClient from "~/middleware/onlyClient";
 export default {
   name: "next",
-  middleware: [auth],
+  middleware: [auth, onlyClient],
   methods: {
     send_update: _.debounce(async function () {
       try {

@@ -4,8 +4,8 @@ export const state = () => ({
   order: null,
   courier_working: false,
   location: {
-    latitude: 50.45951349999998,
-    longitude: 30.5967171
+    latitude: 50.460569,
+    longitude: 30.591311
   }
 })
 

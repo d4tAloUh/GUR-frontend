@@ -81,11 +81,13 @@ import auth from "~/middleware/auth";
 import Loading from "~/components/misc/LoadingBar";
 import OrderStatus from "~/components/misc/OrderStatus";
 import setted from "~/middleware/setted";
+import onlyClient from "~/middleware/onlyClient";
+
 
 export default {
   name: "Order_detail",
   components: {Loading, OrderStatus},
-  middleware: [auth, setted],
+  middleware: [auth, setted, onlyClient],
   data: () => ({
     connected: false,
     dishes: [],
