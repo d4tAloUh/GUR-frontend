@@ -82,6 +82,7 @@ import Loading from "~/components/misc/LoadingBar";
 import OrderStatus from "~/components/misc/OrderStatus";
 import setted from "~/middleware/setted";
 
+
 export default {
   name: "Order_detail",
   components: {Loading, OrderStatus},

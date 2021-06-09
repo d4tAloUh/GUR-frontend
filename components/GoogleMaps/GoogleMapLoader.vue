@@ -1,26 +1,22 @@
 <template>
   <div>
     <div class="google-map" ref="googleMap"></div>
-    {{ mainMarker }}
   </div>
 </template>
 
 <script>
 import {Loader} from '@googlemaps/js-api-loader';
 import {mapGetters} from "vuex";
-import {parse, stringify} from 'flatted';
 
 export default {
   name: "GoogleMapLoader",
   props: {
     mapConfig: Object,
     apiKey: String,
-    markers: [],
   },
   data: () => ({
     loader: null,
     map: null,
-    mainMarker: null
   }),
   async mounted() {
     this.loader = new Loader({
@@ -31,7 +27,7 @@ export default {
     })
     this.loader.load().then(() => {
       this.initializeMap()
-      this.initializeMarkers()
+      // this.initializeMarkers()
     })
   },
 
@@ -41,61 +37,37 @@ export default {
       this.map = new google.maps.Map(
         mapRef, this.mapConfig
       )
+      this.$emit('passMapToParent', this.map)
     },
-    initializeMarkers() {
-      for (let marker of this.markers) {
-        console.log(marker)
-        new google.maps.Marker({
-          position: {
-            lat: marker.position.latitude,
-            lng: marker.position.longitude,
-          },
-          map: this.map,
-          title: "Marker @" + marker.id,
-          label: 'order_' + marker.id
-        });
-      }
-      // if (this.is_courier) {
-      //   // let lat = Number(JSON.stringify(this.latitude))
-      //   let lat = 50.460569
-      //   // let lng = Number(JSON.stringify(this.longitude))
-      //   let lng = 30.591311
-      //   let marker = new google.maps.Marker({
-      //     position: {
-      //       lat: lat,
-      //       lng: lng
-      //     },
-      //     map: this.map,
-      //     label: 'You',
-      //     title: 'you'
-      //   });
-        // this.mainMarker= parse(stringify(marker))
-      // }
-    },
-  },
-  computed: {
-    ...mapGetters({
-      is_courier: 'authorization/isCourier'
-    }),
-    longitude: {
-      get() {
-        return this.$store.getters['courier/courier_location'].longitude
-      },
-    },
-    latitude: {
-      get() {
-        return this.$store.getters['courier/courier_location'].latitude
-      },
-    },
-  },
-  // watch: {
-    // longitude() {
-    //   console.log("courier location changed")
+    // initializeMarkers() {
+    //   for (let marker of this.markers) {
+    //     new google.maps.Marker({
+    //       position: {
+    //         lat: marker.position.latitude,
+    //         lng: marker.position.longitude,
+    //       },
+    //       map: this.map,
+    //       title: "Marker @" + marker.id,
+    //       label: 'order_' + marker.id
+    //     });
+    //   }
+    //   if (this.is_courier) {
+    //     let lat = Number(JSON.stringify(this.latitude))
+    //     let lng = Number(JSON.stringify(this.longitude))
+    //     var marker = new google.maps.Marker({
+    //       position: {
+    //         lat: lat,
+    //         lng: lng
+    //       },
+    //       map: this.map,
+    //       icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+    //     });
+    //     this.existing_markers.push(marker)
+    //   }
     // },
-    // latitude() {
-    //   console.log("courier location changed")
-    // },
-  // }
+  },
+
+
 }
 </script>
 

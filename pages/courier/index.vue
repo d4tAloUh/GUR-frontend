@@ -15,11 +15,15 @@
     </CurrentOrder>
     <div v-else>
       <h3>Вільні замовлення</h3>
-      <GoogleMapLoader
-        :mapConfig="mapConfig"
+      <CourierMap
         :apiKey=google_key
-        :markers=markers
-      />
+        :markers=markers></CourierMap>
+<!--      <GoogleMapLoader-->
+<!--        :mapConfig="mapConfig"-->
+<!--        :apiKey=google_key-->
+<!--        :markers=markers-->
+<!--      />-->
+      {{ markers }}
       <div class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
@@ -32,8 +36,6 @@
 </template>
 
 <script>
-
-
 import CurrentOrder from "~/components/courier/CurrentOrder";
 import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
@@ -41,10 +43,11 @@ import CourierOrder from "~/components/courier/CourierOrder";
 import {mapActions, mapGetters} from "vuex";
 import ToggleButton from "~/components/misc/ToggleButton";
 import GoogleMapLoader from "~/components/GoogleMaps/GoogleMapLoader";
+import CourierMap from "~/components/GoogleMaps/CourierMap";
 
 export default {
   name: "courier_index",
-  components: {CurrentOrder, CourierOrder, ToggleButton, GoogleMapLoader},
+  components: {CurrentOrder, CourierOrder, ToggleButton, GoogleMapLoader, CourierMap},
   middleware: [auth, setted],
   data: () => ({
     connected: false,
@@ -52,11 +55,6 @@ export default {
     websocket: null,
     max_distance: 3500,
     interval: null,
-    mapConfig: {
-      center: {lat: 50.445151, lng: 30.573871},
-      zoom: 13,
-      streetViewControl: false
-    },
   }),
   async fetch() {
     await this.get_active_order()
@@ -92,6 +90,7 @@ export default {
       if (!this.order_exists) {
         try {
           this.orders = await this.$axios.$get('/courier/orders/free');
+
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -134,8 +133,6 @@ export default {
     async connectSocket() {
       if (!this.order_exists) {
         if (process.browser) {
-          // const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-          // this.websocket = new WebSocket(ws_scheme + '://' + this.server_url + "/socket/courier");
           this.websocket = new WebSocket('ws://' + this.server_url + "/socket/courier");
           this.websocket.onopen = this.on_connect
           this.websocket.onclose = this.on_disconnect
@@ -148,17 +145,14 @@ export default {
       this.orders = this.orders.filter(order_item => order_item.order_id !== order_id)
     },
     haversine_distance(location1, location2) {
-      const R = 6371e3
+      const R = 6371.0710
       var rlat1 = location1.latitude * (Math.PI / 180);
       var rlat2 = location2.latitude * (Math.PI / 180);
-      var difflat = (rlat2 - rlat1) * (Math.PI / 180);
+      var difflat = (rlat2 - rlat1)
       var difflon = (location2.longitude - location1.longitude) * (Math.PI / 180);
-
-      const a = Math.sin(difflat / 2) * Math.sin(difflat / 2) +
-        Math.cos(rlat1) * Math.cos(rlat2) *
-        Math.sin(difflon / 2) * Math.sin(difflon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
+      const a = Math.sqrt(Math.sin(difflat / 2) * Math.sin(difflat / 2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.sin(difflon / 2) * Math.sin(difflon / 2))
+      const d = 2 * R * Math.asin(a);
+      return Number(d).toFixed(1);
     },
     set_courier_working: function (value) {
       this.$store.dispatch('courier/do_set_courier_working', value)
@@ -180,7 +174,7 @@ export default {
       return process.env.server_url
     },
     markers: function () {
-      return this.orders.map((order => {
+      return this.available_orders.map((order => {
         return {
           id: order.order_id,
           position: order.restaurant.location
@@ -204,16 +198,14 @@ export default {
       }
     },
     available_orders() {
-      let longitude = this.longitude;
-      let latitude = this.latitude;
       let th = this
       return this.orders.filter(function (order) {
-          let distance = th.haversine_distance(order.delivery_location, {longitude, latitude})
-          return distance < 2000
+          let distance = th.haversine_distance(order.delivery_location, {longitude: th.longitude, latitude: th.latitude})
+          return distance < th.max_distance
         }
       )
     },
-  }
+  },
 }
 
 </script>
