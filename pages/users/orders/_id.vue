@@ -134,8 +134,7 @@ export default {
     },
     async connectSocket() {
       if (!this.connected){
-        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-        this.websocket = new WebSocket(ws_scheme + '://' + window.location.hostname + ":8000/socket/user");
+        this.websocket = new WebSocket('ws://' + this.server_url + "/socket/user");
         this.websocket.onopen = this.on_connect
         this.websocket.onmessage = this.on_message
         this.websocket.onclose = this.on_disconnect
@@ -178,7 +177,10 @@ export default {
       get() {
         return this.$store.getters['authorization/getAccessToken']
       }
-    }
+    },
+    server_url: function () {
+      return process.env.server_url
+    },
   }
 }
 </script>
