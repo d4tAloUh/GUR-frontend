@@ -85,7 +85,6 @@ export default {
       if (!this.order_exists) {
         try {
           this.orders = await this.$axios.$get('/courier/orders/free');
-
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -123,6 +122,7 @@ export default {
       this.websocket.send(JSON.stringify(
         {
           command: "connect_to_order_queue",
+          token: this.token
         }))
     },
     async connectSocket() {
