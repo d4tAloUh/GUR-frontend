@@ -105,9 +105,7 @@ export default {
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order
-        if (this.order.location) {
-          await this.connectSocket();
-        }
+        await this.connectSocket();
       } catch (err) {
         this.loading = false
         if (!err.response) {
