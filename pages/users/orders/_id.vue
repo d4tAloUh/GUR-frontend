@@ -98,6 +98,9 @@ export default {
   async beforeMount() {
     await this.getDetails();
   },
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
   methods: {
     decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {

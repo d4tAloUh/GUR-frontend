@@ -24,6 +24,9 @@ export default {
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
   },
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
   methods: {
     async send_update() {
       if (this.order_exists) {
