@@ -65,9 +65,6 @@ export default {
     price() {
       return this.$store.getters['cart/price']
     },
-    numberOfItems() {
-      return this.$store.getters['cart/numberOfItems']
-    },
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
     }

@@ -53,6 +53,9 @@ export const mutations = {
 }
 
 export const actions = {
+  async doSetItems({commit}, dishes){
+    commit('setItems', dishes)
+  },
   async syncWithServer({commit, state}) {
     if (state.order_id === 0) {
       await this.$axios.$get('/orders',)
