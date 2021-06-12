@@ -84,6 +84,7 @@ import auth from "~/middleware/auth";
 import Uikit from 'uikit'
 import setted from "~/middleware/setted";
 import onlyClient from "~/middleware/onlyClient";
+import OrderHelper from "~/utils/OrderHelper";
 
 
 export default {
@@ -211,9 +212,7 @@ export default {
       delivery_address: 'order/address',
     }),
 
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
+    decimalPrice: OrderHelper.decimalPrice,
     google_key : function (){
       return process.env.google_key
     }

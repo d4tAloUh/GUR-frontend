@@ -74,9 +74,7 @@ export default {
         this.$route.params.dish = value
       }
     },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
+
   }
 }
 </script>

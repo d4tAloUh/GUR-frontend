@@ -67,6 +67,7 @@ import {mapActions, mapGetters} from 'vuex'
 import auth from "@/middleware/auth";
 import Loading from "@/components/misc/LoadingBar";
 import onlyClient from "~/middleware/onlyClient";
+import OrderHelper from "~/utils/OrderHelper";
 
 export default {
   name: "rest_id",
@@ -121,9 +122,7 @@ export default {
     }
   },
   computed: {
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
+    decimalPrice: OrderHelper.decimalPrice,
     sameRestaurant: function () {
       return (this.$store.getters["cart/rest_id"] === 0) || (Number(this.$route.params.id) === Number(this.$store.getters["cart/rest_id"]))
     },

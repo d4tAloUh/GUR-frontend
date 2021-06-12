@@ -38,6 +38,7 @@
 
 <script>
 import {mapActions} from 'vuex'
+import OrderHelper from "~/utils/OrderHelper"
 
 export default {
   name: "Cart",
@@ -65,10 +66,7 @@ export default {
     price() {
       return this.$store.getters['cart/price']
     },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    }
-
+    decimalPrice: OrderHelper.decimalPrice
   }
 }
 </script>
