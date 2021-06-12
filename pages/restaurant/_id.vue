@@ -119,10 +119,11 @@ export default {
     }),
     async clearCart() {
       await this.$store.dispatch('cart/emptyCart')
-    }
+    },
+    decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {
-    decimalPrice: OrderHelper.decimalPrice,
+
     sameRestaurant: function () {
       return (this.$store.getters["cart/rest_id"] === 0) || (Number(this.$route.params.id) === Number(this.$store.getters["cart/rest_id"]))
     },

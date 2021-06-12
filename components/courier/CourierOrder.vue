@@ -26,7 +26,7 @@ export default {
   name: "CourierOrder",
   props: ["order"],
   computed: {
-    decimalPrice: OrderHelper.decimalPrice,
+
     ...mapGetters({
       courier_location: 'courier/courier_location'
     }),
@@ -48,6 +48,7 @@ export default {
     },
   },
   methods: {
+    decimalPrice: OrderHelper.decimalPrice,
     ...mapActions({
       saveOrder: 'courier/do_set_order'
     }),

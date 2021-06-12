@@ -99,6 +99,7 @@ export default {
     await this.getDetails();
   },
   methods: {
+    decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {
       try {
         this.loading = true
@@ -169,7 +170,6 @@ export default {
     },
   },
   computed: {
-    decimalPrice: OrderHelper.decimalPrice,
     token: {
       get() {
         return this.$store.getters['authorization/getAccessToken']

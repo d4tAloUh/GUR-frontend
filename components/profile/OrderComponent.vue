@@ -34,20 +34,20 @@
 <script>
 import OrderStatusTitle from "~/components/misc/OrderStatusTitle";
 import {mapActions, mapGetters} from "vuex";
+import OrderHelper from "~/utils/OrderHelper";
 
 export default {
   name: "OrderComponent",
   props: ["order"],
   components: {OrderStatusTitle},
   computed: {
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
+
     ...mapGetters({
       is_courier: 'authorization/isCourier'
     }),
   },
   methods: {
+    decimalPrice: OrderHelper.decimalPrice,
     ...mapActions({
       set_order: 'cart/setOrder',
       set_rest_id: 'cart/setRest',

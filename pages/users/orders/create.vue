@@ -201,7 +201,8 @@ export default {
     },
     async clearCart() {
       await this.$store.dispatch('cart/emptyCart')
-    }
+    },
+    decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {
     ...mapGetters({
@@ -211,8 +212,6 @@ export default {
       order_location: 'order/location',
       delivery_address: 'order/address',
     }),
-
-    decimalPrice: OrderHelper.decimalPrice,
     google_key : function (){
       return process.env.google_key
     }

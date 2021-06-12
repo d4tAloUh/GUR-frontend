@@ -122,10 +122,8 @@ export default {
         }
       }
     },
-  },
-  computed: {
     decimalPrice: OrderHelper.decimalPrice
-  }
+  },
 }
 </script>
 

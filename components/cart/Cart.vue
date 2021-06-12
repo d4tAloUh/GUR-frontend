@@ -52,6 +52,7 @@ export default {
       deleteFromCart: 'cart/deleteItem',
       syncOrder: 'cart/syncWithServer'
     }),
+    decimalPrice: OrderHelper.decimalPrice
   },
   async beforeMount() {
     await this.syncOrder();
@@ -66,7 +67,7 @@ export default {
     price() {
       return this.$store.getters['cart/price']
     },
-    decimalPrice: OrderHelper.decimalPrice
+
   }
 }
 </script>
