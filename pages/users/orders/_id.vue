@@ -103,7 +103,7 @@ export default {
     async getDetails() {
       try {
         this.loading = true
-        let response = await this.$axios.$get('/user-orders-key/' + this.$route.params.id);
+        let response = await this.$axios.$get('/user-orders/' + this.$route.params.id);
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order
