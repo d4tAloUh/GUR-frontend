@@ -63,6 +63,12 @@ export default {
   async mounted() {
     this.interval = setInterval(this.connectSocket, 2000)
   },
+  deactivated() {
+    clearInterval(this.interval)
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
   methods: {
     async get_active_order() {
       try {

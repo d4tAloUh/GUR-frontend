@@ -19,7 +19,7 @@ export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
   data: () => ({
-    interval: null
+    interval: null,
   }),
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
