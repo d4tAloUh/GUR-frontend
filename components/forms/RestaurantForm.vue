@@ -117,16 +117,12 @@ export default {
         })
     },
     post_update: _.debounce(async function () {
-      await this.$axios.$put('/restaurants', {
+      await this.$axios.$put('/restaurants/' + this.restaurant.rest_id, {
         rest_photo: this.restaurant.rest_photo,
         rest_address: this.restaurant.rest_address,
         name: this.restaurant.name,
         open_from: this.restaurant.open_from,
         open_to: this.restaurant.open_to,
-      }, {
-        params: {
-          'rest_id': this.restaurant.rest_id,
-        }
       })
         .then(response => {
           this.$toast.success("Інформацію було успішно оновлено", {
@@ -149,11 +145,7 @@ export default {
     },2000,{leading:true, trailing:false}),
     post_delete:async function () {
 
-      await this.$axios.$delete('/restaurants', {
-        data: {
-          'rest_id': this.restaurant.rest_id
-        }
-      })
+      await this.$axios.$delete('/restaurants/' + this.restaurant.rest_id,)
         .then(response => {
           this.$toast.success("Ресторан було успішно видалено", {
             toastClassName: ['uk-margin-top']

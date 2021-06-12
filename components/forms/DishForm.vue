@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     post_create: _.debounce(async function () {
-      await this.$axios.post('/restaurant-dishes-exact/0', {
+      await this.$axios.post('/restaurant-dishes/' + this.rest_id, {
         name: this.dish.name,
         dish_photo: this.dish.dish_photo,
         restaurant_id: this.rest_id,
