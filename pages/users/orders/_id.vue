@@ -98,6 +98,9 @@ export default {
   async beforeMount() {
     await this.getDetails();
   },
+  deactivated() {
+    clearInterval(this.interval)
+  },
   beforeDestroy() {
     clearInterval(this.interval)
   },

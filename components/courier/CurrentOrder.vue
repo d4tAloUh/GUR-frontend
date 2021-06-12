@@ -24,6 +24,9 @@ export default {
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
   },
+  deactivated() {
+    clearInterval(this.interval)
+  },
   beforeDestroy() {
     clearInterval(this.interval)
   },
