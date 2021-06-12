@@ -47,33 +47,9 @@
           <div v-if="$fetchState.pending">
             <Loading/>
           </div>
-          <template v-else v-for="order in orders">
-            <div class="uk-card uk-card-default uk-margin" :key="order.order_id">
-              <div class="uk-card-body">
-                <h3>Замовлення № {{ order.order_id }}</h3>
-                <div>
-                  <OrderStatusTitle v-bind:status=order.order_status.status>
-                  </OrderStatusTitle>
-                </div>
-                <div class="uk-width-expand">
-                  <p class="uk-text-meta uk-margin-remove-top">
-                    {{ order.created_tm }}
-                  </p>
-                </div>
-                <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
-                <div>Адреса доставки: {{ order.delivery_address }}</div>
+          <OrderComponent v-else v-for="order in orders" :key="order.order_id" :order="order">
 
-                <div class="uk-margin-top">
-                  <NuxtLink :to="{ name: 'courier-orders-id', params: { id: order.order_id }}" tag="a"
-                            class="uk-button uk-button-secondary uk-align-right" v-if="is_courier">Переглянути
-                  </NuxtLink>
-                  <NuxtLink :to="{ name: 'users-orders-id', params: { id: order.order_id }}" tag="a"
-                            class="uk-button uk-button-secondary uk-align-right" v-else>Переглянути
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </template>
+          </OrderComponent>
           <div v-if="orders.length === 0">
             <img src="https://ik.imagekit.io/alouh/misc/pixeltrue-space-discovery_oz4baq5bKA5h.svg"
                  class="uk-align-center" height="250" width="250" alt=""/>
@@ -93,10 +69,11 @@ import Loading from "@/components/misc/LoadingBar";
 import setted from "@/middleware/setted";
 import _ from 'lodash'
 import {mapGetters} from "vuex";
+import OrderComponent from "~/components/profile/OrderComponent";
 
 export default {
   name: "index",
-  components: {Loading, ToggleButton, OrderStatusTitle},
+  components: {Loading, ToggleButton, OrderStatusTitle, OrderComponent},
   middleware: [auth, setted],
   data: () => ({
     update_profile: false,
@@ -106,7 +83,6 @@ export default {
   async fetch() {
     await this.retrieve_orders();
   },
-
   computed: {
     first_name: {
       get() {
@@ -125,19 +101,16 @@ export default {
       }
     },
     ...mapGetters({
-      partial_admin:'authorization/partial_admin',
-      admin : 'authorization/admin',
+      partial_admin: 'authorization/partial_admin',
+      admin: 'authorization/admin',
       is_courier: 'authorization/isCourier'
     }),
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    }
   },
   methods: {
     retrieve_orders: async function () {
       try {
         let url = '/user-orders'
-        if (this.is_courier){
+        if (this.is_courier) {
           url = '/courier-orders'
         }
         this.orders = await this.$axios.$get(url);
@@ -153,7 +126,6 @@ export default {
           })
           console.error(err.response)
         }
-
       }
     },
     update_profile_method: function (value) {
@@ -162,7 +134,7 @@ export default {
     send_update: _.debounce(async function () {
       try {
         let url = '/user-profile'
-        if (this.is_courier){
+        if (this.is_courier) {
           url = '/courier-profile'
         }
         await this.$axios.$put(url, {
