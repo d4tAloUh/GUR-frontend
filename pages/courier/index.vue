@@ -39,6 +39,7 @@ import {mapActions, mapGetters} from "vuex";
 import ToggleButton from "~/components/misc/ToggleButton";
 import GoogleMapLoader from "~/components/GoogleMaps/GoogleMapLoader";
 import CourierMap from "~/components/GoogleMaps/CourierMap";
+import OrderHelper from "~/utils/OrderHelper";
 
 export default {
   name: "courier_index",
@@ -139,16 +140,7 @@ export default {
     async filter_out_order(order_id) {
       this.orders = this.orders.filter(order_item => order_item.order_id !== order_id)
     },
-    haversine_distance(location1, location2) {
-      const R = 6371.0710
-      var rlat1 = location1.latitude * (Math.PI / 180);
-      var rlat2 = location2.latitude * (Math.PI / 180);
-      var difflat = (rlat2 - rlat1)
-      var difflon = (location2.longitude - location1.longitude) * (Math.PI / 180);
-      const a = Math.sqrt(Math.sin(difflat / 2) * Math.sin(difflat / 2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.sin(difflon / 2) * Math.sin(difflon / 2))
-      const d = 2 * R * Math.asin(a);
-      return Number(d).toFixed(1);
-    },
+    haversine_distance: OrderHelper.haversine_distance,
     set_courier_working: function (value) {
       this.$store.dispatch('courier/do_set_courier_working', value)
     },

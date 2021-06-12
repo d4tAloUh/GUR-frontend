@@ -82,6 +82,7 @@ import Loading from "~/components/misc/LoadingBar";
 import OrderStatus from "~/components/misc/OrderStatus";
 import setted from "~/middleware/setted";
 import onlyClient from "~/middleware/onlyClient";
+import OrderHelper from "~/utils/OrderHelper";
 
 
 export default {
@@ -98,6 +99,7 @@ export default {
     await this.getDetails();
   },
   methods: {
+    decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {
       try {
         this.loading = true
@@ -168,9 +170,6 @@ export default {
     },
   },
   computed: {
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
     token: {
       get() {
         return this.$store.getters['authorization/getAccessToken']

@@ -38,6 +38,7 @@
 
 <script>
 import {mapActions} from 'vuex'
+import OrderHelper from "~/utils/OrderHelper"
 
 export default {
   name: "Cart",
@@ -51,6 +52,7 @@ export default {
       deleteFromCart: 'cart/deleteItem',
       syncOrder: 'cart/syncWithServer'
     }),
+    decimalPrice: OrderHelper.decimalPrice
   },
   async beforeMount() {
     await this.syncOrder();
@@ -65,9 +67,6 @@ export default {
     price() {
       return this.$store.getters['cart/price']
     },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    }
 
   }
 }

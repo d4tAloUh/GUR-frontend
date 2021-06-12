@@ -98,9 +98,6 @@ export default {
         this.$route.params.restaurant = value
       }
     },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
   }
 }
 </script>

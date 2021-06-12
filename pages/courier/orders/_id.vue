@@ -77,6 +77,7 @@ import setted from "~/middleware/setted";
 import Loading from "~/components/misc/LoadingBar";
 import OrderStatus from "~/components/misc/OrderStatus";
 import onlyCourier from "~/middleware/onlyCourier";
+import OrderHelper from "~/utils/OrderHelper";
 
 export default {
   name: "courier-order-id",
@@ -121,12 +122,8 @@ export default {
         }
       }
     },
+    decimalPrice: OrderHelper.decimalPrice
   },
-  computed: {
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
-  }
 }
 </script>
 
