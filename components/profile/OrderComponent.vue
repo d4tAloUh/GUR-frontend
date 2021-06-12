@@ -22,7 +22,9 @@
           <NuxtLink :to="{ name: 'users-orders-id', params: { id: order.order_id }}" tag="a"
                     class="uk-button uk-button-secondary uk-align-right">Переглянути
           </NuxtLink>
-          <button class="uk-button uk-align-right uk-button-primary" v-on:click="">Створити замовлення з цього</button>
+          <button class="uk-button uk-align-right uk-button-primary" v-on:click="recreate_method">Створити замовлення з
+            цього
+          </button>
         </div>
       </div>
     </div>
@@ -31,15 +33,50 @@
 
 <script>
 import OrderStatusTitle from "~/components/misc/OrderStatusTitle";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "OrderComponent",
   props: ["order"],
   components: {OrderStatusTitle},
-  computed:{
+  computed: {
     decimalPrice: function () {
       return price => `${Number(price) / 100}`;
-    }
+    },
+    ...mapGetters({
+      is_courier: 'authorization/isCourier'
+    }),
+  },
+  methods: {
+    ...mapActions({
+      set_order: 'cart/setOrder',
+      set_rest_id: 'cart/setRest',
+      set_dishes: 'cart/doSetItems'
+    }),
+    recreate_method: async function () {
+      try {
+        const response = await this.$axios.$post("/orders/recreate", {
+          order_id: this.order.order_id
+        });
+        await this.set_order(response.order.order_id)
+        await this.set_rest_id(response.restaurant.rest_id)
+        await this.set_dishes(response.dishes)
+        console.log(response)
+        await this.$router.push("users/orders/create")
+      } catch (err) {
+        if (!err.response) {
+          this.$toast.error("Помилка мережі", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err)
+        } else {
+          this.$toast.error(err.response.data.error || "Сталася помилка, коли створювали подбіне замовлення", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err.response)
+        }
+      }
+    },
   }
 
 }
