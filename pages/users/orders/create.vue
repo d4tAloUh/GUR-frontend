@@ -120,8 +120,7 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         } else {
-          await this.$axios.$put('/orders', {
-            "order_id": this.order_id,
+          await this.$axios.$put('/orders/' + this.order_id, {
             "order_details": this.order_details,
             "delivery_location":{
               "longitude": this.order_location[0],
