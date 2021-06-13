@@ -40,6 +40,7 @@
 
 <script>
 import _ from 'lodash'
+import ResErrorHandler from "~/utils/ResErrorHandler";
 
 export default {
   name: "RestaurantForm",
@@ -98,10 +99,9 @@ export default {
               })
               console.error(err)
             } else {
-              this.$toast.error(err.response.data.error || "Сталася помилка", {
+              this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Ресторан не було створено.", {
                 toastClassName: ['uk-margin-top']
               })
-              console.error(err.response)
             }
           })
 
@@ -145,7 +145,7 @@ export default {
             })
             console.error(err)
           } else {
-            this.$toast.error(err.response.data.error || "Сталася помилка", {
+            this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Ресторан не було оновлено.", {
               toastClassName: ['uk-margin-top']
             })
             console.error(err.response)

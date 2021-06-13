@@ -33,6 +33,8 @@
 import auth from "@/middleware/auth";
 import _ from 'lodash'
 import onlyCourier from "~/middleware/onlyCourier";
+import ResErrorHandler from "@/utils/ResErrorHandler";
+
 export default {
   name: "next",
   middleware: [auth, onlyCourier],
@@ -53,8 +55,7 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         else{
-          console.error(err.response)
-          this.$toast.warning("Сталася помилка.", {
+          this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Інформація не була додана.", {
             toastClassName: ['uk-margin-top']
           })
         }

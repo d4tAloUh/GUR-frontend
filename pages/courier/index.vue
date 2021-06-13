@@ -1,8 +1,11 @@
 <template>
   <div>
-    <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
-                  v-on:change="set_courier_working" v-bind:default-state="courier_working"
-    />
+    <div v-if="!order_exists">
+      <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
+                    v-on:change="set_courier_working" v-bind:default-state="courier_working"
+      />
+    </div>
+
     <div class="uk-margin">
       <label>longitude</label>
       <input type="text" name="location" v-model="longitude" class="uk-input"/>
@@ -11,21 +14,29 @@
       <label>latitude</label>
       <input type="text" name="location" v-model="latitude" class="uk-input"/>
     </div>
+
     <CurrentOrder v-if="order_exists">
     </CurrentOrder>
+
     <div v-else>
       <h3>Вільні замовлення</h3>
       <!--      <CourierMap-->
       <!--        :apiKey=google_key-->
       <!--        :markers=markers></CourierMap>-->
-      <div class="uk-card uk-card-default uk-card-body uk-margin">
+      <div v-if="courier_working" class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
         <div v-if="available_orders.length === 0">
           Наразі немає вільних замовлень, зачекайте, будь ласка
         </div>
       </div>
+      <div v-else class="uk-card uk-card-default uk-card-body uk-margin">
+        <div>
+          Щоб отримати список доступних замовлень, необхідно змінити статус на "Працюю"
+        </div>
+      </div>
     </div>
+
   </div>
 </template>
 
