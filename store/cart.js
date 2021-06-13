@@ -135,7 +135,12 @@ export const actions = {
   },
   async deleteItem({commit, state, dispatch}, item) {
 
-    this.$axios.$delete('/order-dishes/' + state.order_id)
+    this.$axios.$delete('/order-dishes/' + state.order_id, {
+      data:{
+        'order_id': state.order_id,
+        'dish_id': item.dish_id,
+      }
+    })
       .then(response => {
         commit('delete', item)
       })
