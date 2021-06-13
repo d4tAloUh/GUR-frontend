@@ -89,7 +89,7 @@ export default {
             status: "C",
             order_id: this.order_id
           });
-          await this.clear_order("Замовлення було відмінено")
+          await this.clear_order("Замовлення було скасовано")
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {

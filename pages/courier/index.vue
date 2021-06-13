@@ -144,7 +144,7 @@ export default {
         }))
     },
     async connectSocket() {
-      if (!this.order_exists && this.courier_working) {
+      if (!this.order_exists && this.courier_working && !this.connected) {
         if (process.browser) {
           this.websocket = new WebSocket('ws://' + this.server_url + "/socket/courier");
           this.websocket.onopen = this.on_connect
@@ -152,6 +152,8 @@ export default {
           this.websocket.onmessage = this.on_message
           clearInterval(this.interval)
         }
+      } else {
+        clearInterval(this.interval)
       }
     },
     async filter_out_order(order_id) {
