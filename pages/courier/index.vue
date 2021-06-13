@@ -1,8 +1,16 @@
 <template>
   <div>
-    <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
-                  v-on:change="set_courier_working" v-bind:default-state="courier_working"
-    />
+    <div v-if="order_exists">
+      <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
+                    v-on:change="set_courier_working" v-bind:default-state="courier_working" disabled="disabled"
+      />
+    </div>
+    <div v-else>
+      <ToggleButton label-enable-text="Працюю" label-disable-text="Відпочиваю" class="uk-align-center margin-top-button"
+                    v-on:change="set_courier_working" v-bind:default-state="courier_working"
+      />
+    </div>
+
     <div class="uk-margin">
       <label>longitude</label>
       <input type="text" name="location" v-model="longitude" class="uk-input"/>
@@ -11,6 +19,12 @@
       <label>latitude</label>
       <input type="text" name="location" v-model="latitude" class="uk-input"/>
     </div>
+<!--    <div v-if="courier_working">-->
+<!--      -->
+<!--    </div>-->
+<!--    <div v-else>-->
+<!--      -->
+<!--    </div>-->
     <CurrentOrder v-if="order_exists">
     </CurrentOrder>
     <div v-else>
