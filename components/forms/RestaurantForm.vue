@@ -2,7 +2,8 @@
   <div class="uk-card uk-card-default uk-card-body">
     <fieldset class="uk-fieldset">
       <div style="overflow: auto">
-      <button class="uk-button uk-button-danger uk-float-right " @click="post_delete" v-if="!to_create">Видалити</button>
+        <button class="uk-button uk-button-danger uk-float-right " @click="post_delete" v-if="!to_create">Видалити
+        </button>
       </div>
       <legend class="uk-legend" v-if="!to_create">Зміна ресторану <b>{{ restaurant.name }}</b></legend>
       <legend class="uk-legend" v-else>Створення ресторану <b>{{ restaurant.name }}</b></legend>
@@ -39,6 +40,7 @@
 
 <script>
 import _ from 'lodash'
+
 export default {
   name: "RestaurantForm",
   props: {
@@ -64,16 +66,23 @@ export default {
   methods: {
     post_create: _.debounce(async function () {
       await this.get_location()
-      if (this.location.length > 0)
-        await this.$axios.post('/restaurants', {
-          rest_photo: this.restaurant.rest_photo,
-          rest_address: this.restaurant.rest_address,
-          name: this.restaurant.name,
-          open_from: this.restaurant.open_from,
-          open_to: this.restaurant.open_to,
+      const data = {
+        rest_photo: this.restaurant.rest_photo,
+        rest_address: this.restaurant.rest_address,
+        name: this.restaurant.name,
+        location: {
           longitude: this.location[0],
           latitude: this.location[1],
-        })
+        },
+      }
+      if (this.restaurant.open_from.length > 0) {
+        data.open_from = this.restaurant.open_from
+      }
+      if (this.restaurant.open_to.length > 0) {
+        data.open_to = this.restaurant.open_to
+      }
+      if (this.location.length > 0)
+        await this.$axios.post('/restaurants', data)
           .then(response => {
             this.$toast.success("Ресторан було успішно створено", {
               toastClassName: ['uk-margin-top']
@@ -96,7 +105,7 @@ export default {
             }
           })
 
-    },2000,{leading:true, trailing:false}),
+    }, 2000, {leading: true, trailing: false}),
     get_location: async function () {
       let vm = this
       return this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.restaurant.rest_address + ', Kyiv&region=ua&language=uk&key=' + process.env.google_key)
@@ -117,16 +126,12 @@ export default {
         })
     },
     post_update: _.debounce(async function () {
-      await this.$axios.$put('/restaurants', {
+      await this.$axios.$put('/restaurants/' + this.restaurant.rest_id, {
         rest_photo: this.restaurant.rest_photo,
         rest_address: this.restaurant.rest_address,
         name: this.restaurant.name,
         open_from: this.restaurant.open_from,
         open_to: this.restaurant.open_to,
-      }, {
-        params: {
-          'rest_id': this.restaurant.rest_id,
-        }
       })
         .then(response => {
           this.$toast.success("Інформацію було успішно оновлено", {
@@ -146,14 +151,10 @@ export default {
             console.error(err.response)
           }
         })
-    },2000,{leading:true, trailing:false}),
-    post_delete:async function () {
+    }, 2000, {leading: true, trailing: false}),
+    post_delete: async function () {
 
-      await this.$axios.$delete('/restaurants', {
-        data: {
-          'rest_id': this.restaurant.rest_id
-        }
-      })
+      await this.$axios.$delete('/restaurants/' + this.restaurant.rest_id,)
         .then(response => {
           this.$toast.success("Ресторан було успішно видалено", {
             toastClassName: ['uk-margin-top']

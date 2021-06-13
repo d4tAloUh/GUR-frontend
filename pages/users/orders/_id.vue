@@ -98,12 +98,18 @@ export default {
   async beforeMount() {
     await this.getDetails();
   },
+  deactivated() {
+    clearInterval(this.interval)
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
   methods: {
     decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {
       try {
         this.loading = true
-        let response = await this.$axios.$get('/user-orders-key/' + this.$route.params.id);
+        let response = await this.$axios.$get('/user-orders/' + this.$route.params.id);
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order

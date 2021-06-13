@@ -85,7 +85,7 @@ export const actions = {
     const record = state.items.find(i => i.dish_id === item.dish_id)
     // This item exists in items
     if (!record) {
-      this.$axios.$post('/order-dishes/' + state.order_id + '/' + item.dish_id, {
+      this.$axios.$post('/order-dishes', {
         'order_id': state.order_id,
         'dish_id': item.dish_id,
         'quantity': 1
@@ -99,7 +99,7 @@ export const actions = {
       })
     } else {
       //Add this item to order
-      this.$axios.$put('/order-dishes/' + state.order_id + '/' + item.dish_id, {
+      this.$axios.$put('/order-dishes/' + state.order_id , {
         'order_id': state.order_id,
         'dish_id': item.dish_id,
         'quantity': record.quantity
@@ -118,7 +118,7 @@ export const actions = {
   async removeItem({commit, state, dispatch}, item) {
     const record = state.items.find(i => i.dish_id === item.dish_id)
     if (record.quantity > 1) {
-      this.$axios.$put('/order-dishes/' + state.order_id + '/' + item.dish_id, {
+      this.$axios.$put('/order-dishes/' + state.order_id , {
         'order_id': state.order_id,
         'dish_id': item.dish_id,
         'quantity': record.quantity
@@ -135,7 +135,12 @@ export const actions = {
   },
   async deleteItem({commit, state, dispatch}, item) {
 
-    this.$axios.$delete('/order-dishes/' + state.order_id + '/' + item.dish_id)
+    this.$axios.$delete('/order-dishes/' + state.order_id, {
+      data:{
+        'order_id': state.order_id,
+        'dish_id': item.dish_id,
+      }
+    })
       .then(response => {
         commit('delete', item)
       })

@@ -39,14 +39,14 @@
 
               <div class="uk-margin">
                 <p v-if="as_courier">
-                  Не маєте аккаунту користувача?
-                  <NuxtLink :to="{ path: '/users/register'}" exact>
+                  Не маєте аккаунту кур'єра?
+                  <NuxtLink :to="{ path: '/courier/register'}" exact>
                     Реєстрація
                   </NuxtLink>
                 </p>
                 <p v-else>
-                  Не маєте аккаунту кур'єра?
-                  <NuxtLink :to="{ path: '/courier/register'}" exact>
+                  Не маєте аккаунту користувача?
+                  <NuxtLink :to="{ path: '/users/register'}" exact>
                     Реєстрація
                   </NuxtLink>
                 </p>

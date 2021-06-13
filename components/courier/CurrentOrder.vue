@@ -3,7 +3,6 @@
     <div>Working now: {{ courier_working }}</div>
     <div>
       <div>Order id is {{ order_id }}</div>
-      <button class="uk-button uk-button-primary" @click="send_update">Відправити локацію</button>
       <button class="uk-button green" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger" @click="cancel_order">Відмінити замовлення</button>
     </div>
@@ -19,10 +18,16 @@ export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
   data: () => ({
-    interval: null
+    interval: null,
   }),
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
+  },
+  deactivated() {
+    clearInterval(this.interval)
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
   },
   methods: {
     async send_update() {
