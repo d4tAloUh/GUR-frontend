@@ -1,5 +1,5 @@
 class ResErrorHandler {
-  checkError(err) {
+  checkUserFormErrors(err) {
     console.error(err.response);
 
     if (err.response['data'].email) {

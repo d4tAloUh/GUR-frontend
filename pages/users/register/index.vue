@@ -89,7 +89,7 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         else {
-          this.$toast.warning(ResErrorHandler.checkError(err), {
+          this.$toast.warning(ResErrorHandler.checkUserFormErrors(err), {
             toastClassName: ['uk-margin-top']
           })
         }
