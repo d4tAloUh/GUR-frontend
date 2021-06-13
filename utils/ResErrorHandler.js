@@ -7,7 +7,7 @@ class ResErrorHandler {
         try{
           return err.response['data'][prop][0];
         }
-        catch (err) {
+        catch (error) {
           return "Сталася помилка.";
         }
       }
