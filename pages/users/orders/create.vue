@@ -147,7 +147,7 @@ export default {
                 console.error(err)
               }
               else{
-                if (err.response.data && err.response.data.error && err.response.data.error ==='Ваше замовлення пусте'){
+                if (err.response.data && err.response.data.error && err.response.data.error === 'Ваше замовлення пусте'){
                     this.clearCart()
                     this.$toast.error("Таких страв більше не існує", {
                       toastClassName: ['uk-margin-top']
