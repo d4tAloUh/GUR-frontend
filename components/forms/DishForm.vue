@@ -41,6 +41,7 @@
 
 <script>
 import _ from 'lodash'
+import ResErrorHandler from "@/utils/ResErrorHandler";
 
 export default {
   name: "DishForm",
@@ -87,10 +88,9 @@ export default {
             })
             console.error(err)
           } else {
-            this.$toast.error(err.response.data.error || "Сталася помилка", {
+            this.$toast.error(ResErrorHandler.checkDishFormErrors(err), {
               toastClassName: ['uk-margin-top']
             })
-            console.error(err.response)
           }
         })
 
@@ -118,7 +118,7 @@ export default {
             })
             console.error(err)
           } else {
-            this.$toast.error(err.response.data.error || "Сталася помилка", {
+            this.$toast.error(ResErrorHandler.checkDishFormErrors(err), {
               toastClassName: ['uk-margin-top']
             })
             if (err.response.status === 403){

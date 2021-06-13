@@ -70,6 +70,7 @@ import setted from "@/middleware/setted";
 import _ from 'lodash'
 import {mapGetters} from "vuex";
 import OrderComponent from "~/components/profile/OrderComponent";
+import ResErrorHandler from "@/utils/ResErrorHandler";
 
 export default {
   name: "index",
@@ -151,10 +152,9 @@ export default {
           })
           console.error(err)
         } else {
-          this.$toast.error(err.response.data.tel_num[0] || "Сталася помилка, під час оновлення вашого профілю", {
+          this.$toast.error(ResErrorHandler.checkUserUpdateFormErrors(err), {
             toastClassName: ['uk-margin-top']
           })
-          console.error(err.response)
         }
 
       } finally {
