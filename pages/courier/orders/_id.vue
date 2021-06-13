@@ -94,7 +94,7 @@ export default {
     async getDetails() {
       try {
         this.loading = true
-        let response = await this.$axios.$get('/courier-orders-key/' + this.$route.params.id);
+        let response = await this.$axios.$get('/courier-orders/' + this.$route.params.id);
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order

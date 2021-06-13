@@ -55,11 +55,9 @@ export default {
     haversine_distance: OrderHelper.haversine_distance,
     acceptOrder: async function (order_id) {
       try {
-        const response = await this.$axios.$put('/courier/orders/free', {
-          order_id,
+        const response = await this.$axios.$put('/courier/orders/free/' + order_id, {
           courier_location: this.courier_location
         });
-        console.log(response)
         await this.saveOrder(response)
       } catch (err) {
         if (!err.response) {

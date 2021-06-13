@@ -19,10 +19,16 @@ export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
   data: () => ({
-    interval: null
+    interval: null,
   }),
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
+  },
+  deactivated() {
+    clearInterval(this.interval)
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
   },
   methods: {
     async send_update() {
