@@ -99,7 +99,7 @@ export default {
               })
               console.error(err)
             } else {
-              this.$toast.warning(ResErrorHandler.checkRestaurantFormErrors(err), {
+              this.$toast.warning(ResErrorHandler.checkFormErrors(err), {
                 toastClassName: ['uk-margin-top']
               })
             }
@@ -145,7 +145,7 @@ export default {
             })
             console.error(err)
           } else {
-            this.$toast.warning(ResErrorHandler.checkRestaurantFormErrors(err), {
+            this.$toast.warning(ResErrorHandler.checkFormErrors(err), {
               toastClassName: ['uk-margin-top']
             })
             console.error(err.response)

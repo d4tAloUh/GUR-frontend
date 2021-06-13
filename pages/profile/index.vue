@@ -152,7 +152,7 @@ export default {
           })
           console.error(err)
         } else {
-          this.$toast.error(ResErrorHandler.checkUserUpdateFormErrors(err), {
+          this.$toast.error(ResErrorHandler.checkFormErrors(err), {
             toastClassName: ['uk-margin-top']
           })
         }
