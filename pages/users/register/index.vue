@@ -59,6 +59,7 @@
 
 <script>
 import _ from "lodash";
+import ResErrorHandler from "~/utils/ResErrorHandler";
 
 export default {
   name: "register",
@@ -88,16 +89,9 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         else {
-          if (err.response['data'].email) {
-            this.$toast.warning("Вже існує користувач з таким емейлом.", {
-              toastClassName: ['uk-margin-top']
-            })
-          } else {
-            console.error(err.response)
-            this.$toast.warning("Сталася помилка.", {
-              toastClassName: ['uk-margin-top']
-            })
-          }
+          this.$toast.warning(ResErrorHandler.checkError(err), {
+            toastClassName: ['uk-margin-top']
+          })
         }
       }
 
