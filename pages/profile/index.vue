@@ -152,7 +152,7 @@ export default {
           })
           console.error(err)
         } else {
-          this.$toast.error(ResErrorHandler.checkFormErrors(err), {
+          this.$toast.error(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Інформація не була додана.", {
             toastClassName: ['uk-margin-top']
           })
         }

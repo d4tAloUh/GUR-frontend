@@ -8,12 +8,12 @@ class ResErrorHandler {
           return err.response['data'][prop][0];
         }
         catch (error) {
-          return "Сталася помилка.";
+          return null;
         }
       }
     }
 
-    return "Сталася помилка.";
+    return null;
   }
 }
 

@@ -55,7 +55,7 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         else{
-          this.$toast.warning(ResErrorHandler.checkFormErrors(err), {
+          this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Інформація не була додана.", {
             toastClassName: ['uk-margin-top']
           })
         }

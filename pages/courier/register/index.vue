@@ -88,7 +88,7 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         else {
-          this.$toast.warning(ResErrorHandler.checkFormErrors(err), {
+          this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Аккаунт не було створено.", {
             toastClassName: ['uk-margin-top']
           })
         }

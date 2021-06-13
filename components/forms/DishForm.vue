@@ -88,7 +88,7 @@ export default {
             })
             console.error(err)
           } else {
-            this.$toast.error(ResErrorHandler.checkFormErrors(err), {
+            this.$toast.error(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Страву не було створено.", {
               toastClassName: ['uk-margin-top']
             })
           }
@@ -118,7 +118,7 @@ export default {
             })
             console.error(err)
           } else {
-            this.$toast.error(ResErrorHandler.checkFormErrors(err), {
+            this.$toast.error(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Страву не було оновлено.", {
               toastClassName: ['uk-margin-top']
             })
             if (err.response.status === 403){
