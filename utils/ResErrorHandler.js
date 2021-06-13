@@ -13,6 +13,20 @@ class ResErrorHandler {
     }
   }
 
+  checkNextFormErrors(err) {
+    console.error(err.response);
+
+    if (err.response['data'].first_name) {
+      return err.response['data'].first_name[0];
+    }
+    if (err.response['data'].tel_num) {
+      return err.response['data'].tel_num[0];
+    }
+    else {
+      return "Сталася помилка.";
+    }
+  }
+
   checkRestaurantFormErrors(err) {
     console.error(err.response);
 

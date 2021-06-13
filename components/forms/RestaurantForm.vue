@@ -102,7 +102,6 @@ export default {
               this.$toast.warning(ResErrorHandler.checkRestaurantFormErrors(err), {
                 toastClassName: ['uk-margin-top']
               })
-              console.error(err.response)
             }
           })
 
