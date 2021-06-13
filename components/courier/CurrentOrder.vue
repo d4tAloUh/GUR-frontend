@@ -62,7 +62,7 @@ export default {
             status: "F",
             order_id: this.order_id
           });
-          await this.clear_order()
+          await this.clear_order("Дякуємо за доставлене замовлення")
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -89,7 +89,7 @@ export default {
             status: "C",
             order_id: this.order_id
           });
-          await this.clear_order()
+          await this.clear_order("Замовлення було відмінено")
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -112,10 +112,10 @@ export default {
     ...mapActions({
       saveOrder: 'courier/do_set_order'
     }),
-    async clear_order() {
+    async clear_order(content) {
       await this.saveOrder(null)
       clearInterval(this.interval)
-      this.$toast.info("Дякуємо за доставлене замовлення", {
+      this.$toast.info(content, {
         toastClassName: ['uk-margin-top']
       })
     }
