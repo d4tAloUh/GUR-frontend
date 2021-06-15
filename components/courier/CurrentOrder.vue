@@ -58,9 +58,8 @@ export default {
     async finish_order() {
       if (this.order_exists) {
         try {
-          await this.$axios.$post('/order-statuses/0', {
+          await this.$axios.$post('/order-statuses/' + this.order_id, {
             status: "F",
-            order_id: this.order_id
           });
           await this.clear_order("Дякуємо за доставлене замовлення")
         } catch (err) {
@@ -85,9 +84,8 @@ export default {
     async cancel_order() {
       if (this.order_exists) {
         try {
-          await this.$axios.$post('/order-statuses/0', {
-            status: "C",
-            order_id: this.order_id
+          await this.$axios.$post('/order-statuses/' + this.order_id, {
+            status: "C"
           });
           await this.clear_order("Замовлення було скасовано")
         } catch (err) {
