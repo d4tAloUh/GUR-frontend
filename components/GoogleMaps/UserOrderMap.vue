@@ -32,19 +32,8 @@ export default {
       this.initializeMarkers()
     },
     initializeMarkers() {
-      for (let marker of this.markers) {
-        new google.maps.Marker({
-          position: {
-            lat: marker.position.latitude,
-            lng: marker.position.longitude,
-          },
-          map: this.map,
-          title: "Marker @" + marker.id,
-          label: 'order_' + marker.id
-        });
-      }
-      let lat = Number(JSON.stringify(this.latitude))
-      let lng = Number(JSON.stringify(this.longitude))
+      let lat = Number(JSON.stringify(this.center.lat))
+      let lng = Number(JSON.stringify(this.center.lng))
       var marker = new google.maps.Marker({
         position: {
           lat: lat,
@@ -64,7 +53,7 @@ export default {
   },
   watch: {
     center() {
-      let position = new google.maps.LatLng(this.center.lat, this.lng);
+      let position = new google.maps.LatLng(this.center.lat, this.center.lng);
       this.existing_markers[0].setPosition(position)
     },
   }

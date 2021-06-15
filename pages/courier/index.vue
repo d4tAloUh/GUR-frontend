@@ -20,9 +20,9 @@
 
     <div v-else>
       <h3>Вільні замовлення</h3>
-      <!--      <CourierMap-->
-      <!--        :apiKey=google_key-->
-      <!--        :markers=markers></CourierMap>-->
+        <!--      <CourierMap-->
+        <!--        :apiKey=google_key-->
+        <!--        :markers=markers></CourierMap>-->
       <div v-if="courier_working" class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>

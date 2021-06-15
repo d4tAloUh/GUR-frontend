@@ -58,9 +58,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      is_courier: 'authorization/isCourier'
-    }),
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude

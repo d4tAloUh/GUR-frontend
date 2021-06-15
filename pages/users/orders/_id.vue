@@ -4,9 +4,11 @@
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
     <div v-if="order">
+      <!--      <CourierMap-->
+      <!--        :apiKey=google_key-->
+      <!--        :markers=markers></CourierMap>-->
       <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ order.location }}</h2>
-      <div v-if="connected">Connected to socket</div>
-      <div v-else>
+      <div v-if="!connected">
         Disconnected
         <button class="uk-button uk-button-primary" @click="connectSocket">Connect socket</button>
       </div>
