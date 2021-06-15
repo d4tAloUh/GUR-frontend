@@ -27,10 +27,8 @@ export default {
     })
     this.loader.load().then(() => {
       this.initializeMap()
-      // this.initializeMarkers()
     })
   },
-
   methods: {
     initializeMap() {
       const mapRef = this.$refs.googleMap
@@ -39,35 +37,7 @@ export default {
       )
       this.$emit('passMapToParent', this.map)
     },
-    // initializeMarkers() {
-    //   for (let marker of this.markers) {
-    //     new google.maps.Marker({
-    //       position: {
-    //         lat: marker.position.latitude,
-    //         lng: marker.position.longitude,
-    //       },
-    //       map: this.map,
-    //       title: "Marker @" + marker.id,
-    //       label: 'order_' + marker.id
-    //     });
-    //   }
-    //   if (this.is_courier) {
-    //     let lat = Number(JSON.stringify(this.latitude))
-    //     let lng = Number(JSON.stringify(this.longitude))
-    //     var marker = new google.maps.Marker({
-    //       position: {
-    //         lat: lat,
-    //         lng: lng
-    //       },
-    //       map: this.map,
-    //       icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
-    //     });
-    //     this.existing_markers.push(marker)
-    //   }
-    // },
   },
-
-
 }
 </script>
 
