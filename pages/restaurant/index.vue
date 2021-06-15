@@ -87,9 +87,6 @@ export default {
               'latitude': this.location[1]
             }
           });
-          // this.restaurantList.sort(function (a, b) {
-          //   return (a === b) ? 0 : a ? 1 : -1
-          // })
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -103,18 +100,12 @@ export default {
     }, 2000, {leading: true, trailing: false})
   },
   computed: {
-    location() {
-      return this.$store.getters['order/location']
-    },
-    address() {
-      return this.$store.getters['order/address']
-    },
-    accepted() {
-      return this.$store.getters['order/accepted']
-    },
     ...mapGetters({
       isAuthenticated: 'authorization/isAuthenticated',
-      finishedRegistration: 'authorization/isSettedUp'
+      finishedRegistration: 'authorization/isSettedUp',
+      location: 'order/location',
+      address: 'order/address',
+      accepted: 'order/accepted'
     })
   },
   watch: {

@@ -98,11 +98,11 @@ export const actions = {
         console.error(err.response)
       })
     } else {
+      console.log(record.quantity)
       //Add this item to order
       this.$axios.$put('/order-dishes/' + state.order_id , {
-        'order_id': state.order_id,
-        'dish_id': item.dish_id,
-        'quantity': record.quantity
+        'dish_id': record.dish_id,
+        'quantity': (record.quantity + 1)
       }).then(response => {
         commit('increaseQuantity', record)
         if (Number(state.rest_id) === 0 || typeof state.rest_id === 'undefined')
@@ -119,9 +119,8 @@ export const actions = {
     const record = state.items.find(i => i.dish_id === item.dish_id)
     if (record.quantity > 1) {
       this.$axios.$put('/order-dishes/' + state.order_id , {
-        'order_id': state.order_id,
         'dish_id': item.dish_id,
-        'quantity': record.quantity
+        'quantity': (record.quantity - 1)
       }).then(response => {
         commit('reduceQuantity', record)
       })

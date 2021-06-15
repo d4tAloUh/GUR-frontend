@@ -67,7 +67,7 @@ export default {
   methods: {
     post_create: _.debounce(async function () {
       await this.get_location()
-      const data = {
+      let data = {
         rest_photo: this.restaurant.rest_photo,
         rest_address: this.restaurant.rest_address,
         name: this.restaurant.name,
@@ -159,7 +159,6 @@ export default {
           this.$toast.success("Ресторан було успішно видалено", {
             toastClassName: ['uk-margin-top']
           })
-
           this.$store.dispatch('admin/do_set_deleted_rest_id', this.restaurant.rest_id)
           this.$router.push('/admin')
         })
