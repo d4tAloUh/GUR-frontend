@@ -21,9 +21,9 @@ export default {
   async mounted() {
     this.loader = new Loader({
       apiKey: this.apiKey,
-      version: "weekly",
       nonce: "caffe67d7b989af3a1c7f4a1a6c79bd9fb2b4eb0",
-      language: 'ua'
+      language: 'ua',
+      retries: 5
     })
     this.loader.load().then(() => {
       this.initializeMap()

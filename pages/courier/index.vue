@@ -173,9 +173,6 @@ export default {
       token: 'authorization/getAccessToken',
       courier_working: 'courier/courier_working'
     }),
-    // google_key: function () {
-    //   return process.env.google_key
-    // },
     server_url: function () {
       return process.env.server_url
     },

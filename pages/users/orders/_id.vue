@@ -4,9 +4,12 @@
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
     <div v-if="order">
-      <!--      <CourierMap-->
-      <!--        :apiKey=google_key-->
-      <!--        :markers=markers></CourierMap>-->
+      <UserOrderMap
+        :apiKey=google_key
+        :user_location="{lat: order.delivery_location.latitude,
+                  lng: order.delivery_location.longitude }"
+        :courier_location="order.location ? {lat: order.location.latitude,
+                  lng: order.location.longitude }: null"></UserOrderMap>
       <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ order.location }}</h2>
       <div v-if="!connected">
         Disconnected
@@ -85,11 +88,12 @@ import OrderStatus from "~/components/misc/OrderStatus";
 import setted from "~/middleware/setted";
 import onlyClient from "~/middleware/onlyClient";
 import OrderHelper from "~/utils/OrderHelper";
+import UserOrderMap from "~/components/GoogleMaps/UserOrderMap";
 
 
 export default {
   name: "Order_detail",
-  components: {Loading, OrderStatus},
+  components: {Loading, OrderStatus, UserOrderMap},
   middleware: [auth, setted, onlyClient],
   data: () => ({
     connected: false,
@@ -141,7 +145,7 @@ export default {
       }
     },
     async connectSocket() {
-      if (!this.connected){
+      if (!this.connected) {
         this.websocket = new WebSocket('ws://' + this.server_url + "/socket/user");
         this.websocket.onopen = this.on_connect
         this.websocket.onmessage = this.on_message
@@ -185,6 +189,9 @@ export default {
     },
     server_url: function () {
       return process.env.server_url
+    },
+    google_key: function () {
+      return process.env.google_key
     },
   }
 }

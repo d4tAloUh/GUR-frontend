@@ -13,18 +13,17 @@ import {mapGetters} from "vuex";
 
 export default {
   name: "UserOrderMap",
-  props: ["markers", "apiKey", "center"],
+  props: ["apiKey", "user_location", "courier_location"],
   data: () => ({
     map: null,
     existing_markers: [],
     mapConfig: {
-      center: this.center,
       zoom: 13,
       streetViewControl: false
     },
   }),
-  mounted() {
-    this.initializeMarkers()
+  beforeMount() {
+    this.mapConfig.center = this.user_location
   },
   methods: {
     acceptMap(map) {
@@ -32,9 +31,9 @@ export default {
       this.initializeMarkers()
     },
     initializeMarkers() {
-      let lat = Number(JSON.stringify(this.center.lat))
-      let lng = Number(JSON.stringify(this.center.lng))
-      var marker = new google.maps.Marker({
+      let lat = Number(JSON.stringify(this.user_location.lat))
+      let lng = Number(JSON.stringify(this.user_location.lng))
+      const order_marker = new google.maps.Marker({
         position: {
           lat: lat,
           lng: lng
@@ -43,7 +42,20 @@ export default {
         icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
       });
       this.existing_markers = []
-      this.existing_markers.push(marker)
+      this.existing_markers.push(order_marker)
+      // if (this.courier_location) {
+      //   lat = Number(JSON.stringify(this.courier_location.lat))
+      //   lng = Number(JSON.stringify(this.courier_location.lng))
+      //   const courier_marker = new google.maps.Marker({
+      //     position: {
+      //       lat: lat,
+      //       lng: lng
+      //     },
+      //     map: this.map,
+      //     icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+      //   });
+      //   this.existing_markers.push(courier_marker)
+      // }
     },
   },
   computed: {
@@ -53,8 +65,29 @@ export default {
   },
   watch: {
     center() {
-      let position = new google.maps.LatLng(this.center.lat, this.center.lng);
-      this.existing_markers[0].setPosition(position)
+      if (this.map) {
+        let position = new google.maps.LatLng(this.user_location.lat, this.user_location.lng);
+        this.existing_markers[0].setPosition(position)
+      }
+    },
+    courier_location() {
+      if (this.map && this.existing_markers.length === 2) {
+        let position = new google.maps.LatLng(this.courier_location.lat, this.courier_location.lng);
+        this.existing_markers[1].setPosition(position)
+      } else if (this.existing_markers.length === 1){
+        if (this.courier_location) {
+          let lat = Number(JSON.stringify(this.courier_location.lat))
+          let lng = Number(JSON.stringify(this.courier_location.lng))
+          const courier_marker = new google.maps.Marker({
+            position: {
+              lat: lat,
+              lng: lng
+            },
+            map: this.map,
+          });
+          this.existing_markers.push(courier_marker)
+        }
+      }
     },
   }
 }
