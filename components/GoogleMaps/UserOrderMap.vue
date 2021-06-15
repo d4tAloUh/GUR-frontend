@@ -31,6 +31,7 @@ export default {
       this.initializeMarkers()
     },
     initializeMarkers() {
+      let bounds = new google.maps.LatLngBounds();
       let lat = Number(JSON.stringify(this.user_location.lat))
       let lng = Number(JSON.stringify(this.user_location.lng))
       const order_marker = new google.maps.Marker({
@@ -41,21 +42,28 @@ export default {
         map: this.map,
         icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
       });
+      bounds.extend(order_marker.getPosition())
       this.existing_markers = []
       this.existing_markers.push(order_marker)
-      // if (this.courier_location) {
-      //   lat = Number(JSON.stringify(this.courier_location.lat))
-      //   lng = Number(JSON.stringify(this.courier_location.lng))
-      //   const courier_marker = new google.maps.Marker({
-      //     position: {
-      //       lat: lat,
-      //       lng: lng
-      //     },
-      //     map: this.map,
-      //     icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
-      //   });
-      //   this.existing_markers.push(courier_marker)
-      // }
+      if (this.courier_location) {
+        lat = Number(JSON.stringify(this.courier_location.lat))
+        lng = Number(JSON.stringify(this.courier_location.lng))
+        const courier_marker = new google.maps.Marker({
+          position: {
+            lat: lat,
+            lng: lng
+          },
+          map: this.map,
+          label: {
+            color: 'black',
+            text: "Кур'єр",
+          },
+        });
+        this.existing_markers.push(courier_marker)
+        bounds.extend(courier_marker.getPosition())
+      }
+      this.map.fitBounds(bounds);
+      this.map.setCenter(bounds.getCenter());
     },
   },
   computed: {
@@ -74,25 +82,31 @@ export default {
       if (this.map && this.existing_markers.length === 2) {
         let position = new google.maps.LatLng(this.courier_location.lat, this.courier_location.lng);
         this.existing_markers[1].setPosition(position)
-      } else if (this.existing_markers.length === 1){
-        if (this.courier_location) {
-          let lat = Number(JSON.stringify(this.courier_location.lat))
-          let lng = Number(JSON.stringify(this.courier_location.lng))
-          const courier_marker = new google.maps.Marker({
-            position: {
-              lat: lat,
-              lng: lng
-            },
-            map: this.map,
-          });
-          this.existing_markers.push(courier_marker)
-        }
       }
+      // else if (this.existing_markers.length === 1 && this.courier_location) {
+      //   let lat = Number(JSON.stringify(this.courier_location.lat))
+      //   let lng = Number(JSON.stringify(this.courier_location.lng))
+      //   const courier_marker = new google.maps.Marker({
+      //     position: {
+      //       lat: lat,
+      //       lng: lng
+      //     },
+      //     map: this.map,
+      //     label: {
+      //       color: 'white',
+      //       fontWeight: 'bold',
+      //       text: "Кур'єр",
+      //     },
+      //     icon: {
+      //       labelOrigin: new google.maps.Point(45, 8),
+      //     },
+      //   });
+      //   this.existing_markers.push(courier_marker)
+      // }
     },
   }
 }
 </script>
 
 <style scoped>
-
 </style>

@@ -195,7 +195,7 @@ export default {
     },
     is_in_delivery() {
       let finished = this.order.order_status.find(s => s.status === 'F') || this.order.order_status.find(s => s.status === 'C')
-      return this.order.order_status.find(s => s.status === 'D') && !finished
+      return this.order.order_status.find(s => s.status === 'D') && !finished && this.order.location
     }
   }
 }
