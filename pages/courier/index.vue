@@ -173,20 +173,20 @@ export default {
       token: 'authorization/getAccessToken',
       courier_working: 'courier/courier_working'
     }),
-    google_key: function () {
-      return process.env.google_key
-    },
+    // google_key: function () {
+    //   return process.env.google_key
+    // },
     server_url: function () {
       return process.env.server_url
     },
-    markers: function () {
-      return this.available_orders.map((order => {
-        return {
-          id: order.order_id,
-          position: order.restaurant.location
-        }
-      }))
-    },
+    // markers: function () {
+    //   return this.available_orders.map((order => {
+    //     return {
+    //       id: order.order_id,
+    //       position: order.restaurant.location
+    //     }
+    //   }))
+    // },
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude
