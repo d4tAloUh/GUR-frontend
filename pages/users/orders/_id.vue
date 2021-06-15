@@ -4,13 +4,13 @@
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
     <div v-if="order">
-      <UserOrderMap
-        :apiKey=google_key
-        :user_location="{lat: order.delivery_location.latitude,
+      <UserOrderMap v-if="is_in_delivery"
+                    :apiKey=google_key
+                    :user_location="{lat: order.delivery_location.latitude,
                   lng: order.delivery_location.longitude }"
-        :courier_location="order.location ? {lat: order.location.latitude,
+                    :courier_location="order.location ? {lat: order.location.latitude,
                   lng: order.location.longitude }: null"></UserOrderMap>
-      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ order.location }}</h2>
+      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }}</h2>
       <div v-if="!connected">
         Disconnected
         <button class="uk-button uk-button-primary" @click="connectSocket">Connect socket</button>
@@ -193,6 +193,10 @@ export default {
     google_key: function () {
       return process.env.google_key
     },
+    is_in_delivery() {
+      let finished = this.order.order_status.find(s => s.status === 'F') || this.order.order_status.find(s => s.status === 'C')
+      return this.order.order_status.find(s => s.status === 'D') && !finished
+    }
   }
 }
 </script>
