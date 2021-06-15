@@ -9,10 +9,10 @@
       </div>
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
-      <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
-      <div>Відстань від замовлення до ресторану:
-        ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
-      </div>
+<!--      <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>-->
+<!--      <div>Відстань від замовлення до ресторану:-->
+<!--        ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км-->
+<!--      </div>-->
       <button class="uk-button uk-button-primary" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
     </div>
   </div>

@@ -85,7 +85,6 @@ export default {
     async getDishes() {
       try {
         let response = await this.$axios.$get('/restaurant-dishes/' + this.$route.params.id);
-        console.log(response)
         this.dishes = response.dishes
         this.restaurant = response.restaurant
         this.open = response.restaurant.is_open

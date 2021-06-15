@@ -144,7 +144,7 @@ export default {
         }))
     },
     async connectSocket() {
-      if (!this.order_exists && this.courier_working) {
+      if (!this.order_exists && this.courier_working && !this.connected) {
         if (process.browser) {
           this.websocket = new WebSocket('ws://' + this.server_url + "/socket/courier");
           this.websocket.onopen = this.on_connect
@@ -152,6 +152,8 @@ export default {
           this.websocket.onmessage = this.on_message
           clearInterval(this.interval)
         }
+      } else {
+        clearInterval(this.interval)
       }
     },
     async filter_out_order(order_id) {
@@ -171,20 +173,20 @@ export default {
       token: 'authorization/getAccessToken',
       courier_working: 'courier/courier_working'
     }),
-    google_key: function () {
-      return process.env.google_key
-    },
+    // google_key: function () {
+    //   return process.env.google_key
+    // },
     server_url: function () {
       return process.env.server_url
     },
-    markers: function () {
-      return this.available_orders.map((order => {
-        return {
-          id: order.order_id,
-          position: order.restaurant.location
-        }
-      }))
-    },
+    // markers: function () {
+    //   return this.available_orders.map((order => {
+    //     return {
+    //       id: order.order_id,
+    //       position: order.restaurant.location
+    //     }
+    //   }))
+    // },
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude

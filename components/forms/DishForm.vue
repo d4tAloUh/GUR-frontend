@@ -103,7 +103,6 @@ export default {
         description: this.dish.description,
         price: this.dish.price,
         gramme: this.dish.gramme,
-        dish_id: this.dish.dish_id
       })
         .then(response => {
           this.$toast.success("Страву було успішно оновлено", {
@@ -129,11 +128,7 @@ export default {
         })
     }, 2000, {leading: true, trailing: false}),
     post_delete: async function () {
-      await this.$axios.$delete('/restaurant-dishes-exact/' + this.dish.dish_id, {
-        data: {
-          'dish_id': this.dish.dish_id
-        }
-      })
+      await this.$axios.$delete('/restaurant-dishes-exact/' + this.dish.dish_id)
         .then(response => {
           this.$toast.success("Страву було успішно видалено", {
             toastClassName: ['uk-margin-top']
