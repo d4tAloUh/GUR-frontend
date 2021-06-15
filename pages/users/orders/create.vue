@@ -16,6 +16,9 @@
     </client-only>
     <h2>Ваше замовлення:</h2>
     <div v-if="price > 0">
+      <NuxtLink :to="{ name: 'restaurant-id', params: { id: rest_id }}" tag="a" class="uk-button uk-button-primary uk-align-right"
+      >Повернутися у ресторан
+      </NuxtLink>
       <table class="uk-table uk-table-striped uk-table-small uk-table-responsive">
         <thead>
         <tr>
@@ -210,6 +213,7 @@ export default {
       order_id: 'cart/order_id',
       order_location: 'order/location',
       delivery_address: 'order/address',
+      rest_id: 'cart/rest_id'
     }),
     google_key : function (){
       return process.env.google_key
