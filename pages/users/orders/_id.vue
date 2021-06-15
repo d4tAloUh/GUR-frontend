@@ -23,7 +23,11 @@
               <OrderStatus v-bind:statuses=order.order_status></OrderStatus>
             </div>
             <div>
-              <p>Ресторан: {{ order.restaurant.name }}</p>
+              <p>Ресторан:
+                <NuxtLink :to="{ name: 'restaurant-id', params: { id: order.restaurant.rest_id }}" tag="a"
+                >{{ order.restaurant.name }}
+                </NuxtLink>
+              </p>
             </div>
             <div>
               <p>Доставка від: {{ order.restaurant.rest_address }}</p>
@@ -139,7 +143,7 @@ export default {
       }
     },
     async connectSocket() {
-      if (!this.connected){
+      if (!this.connected) {
         this.websocket = new WebSocket('ws://' + this.server_url + "/socket/user");
         this.websocket.onopen = this.on_connect
         this.websocket.onmessage = this.on_message
