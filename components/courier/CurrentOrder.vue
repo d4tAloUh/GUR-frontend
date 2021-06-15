@@ -125,7 +125,7 @@ export default {
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
     })
-  }
+  },
 }
 </script>
 

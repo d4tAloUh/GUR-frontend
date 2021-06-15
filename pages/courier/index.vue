@@ -65,7 +65,7 @@ export default {
   }),
   async fetch() {
     await this.get_active_order()
-    await this.retrieve_orders()
+    await this.retrieve_free_orders()
     // navigator.geolocation.getCurrentPosition(position => {
     //   this.latitude = position.coords.latitude
     //   this.longitude = position.coords.longitude
@@ -99,7 +99,7 @@ export default {
         }
       }
     },
-    async retrieve_orders() {
+    async retrieve_free_orders() {
       if (!this.order_exists) {
         try {
           this.orders = await this.$axios.$get('/courier/orders/free');
@@ -220,9 +220,16 @@ export default {
         this.orders = []
       } else if (!this.order_exists) {
         await this.get_active_order()
-        await this.retrieve_orders()
+        await this.retrieve_free_orders()
       }
-    }
+    },
+    async order_exists(new_val) {
+      if (new_val) {
+        this.orders = []
+      } else {
+        await this.retrieve_free_orders()
+      }
+    },
   }
 }
 
