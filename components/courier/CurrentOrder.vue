@@ -1,8 +1,33 @@
 <template>
-  <div>
-    <div>Working now: {{ courier_working }}</div>
-    <div>
-      <div>Order id is {{ order_id }}</div>
+  <div class="uk-card uk-card-default uk-margin">
+    <div class="uk-card-body">
+      <div>Замовлення № {{ order_id }}</div>
+      <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
+      <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
+      <div>Адреса доставки: {{ order.delivery_address }}</div>
+      <div>
+        <a v-if="isHidden" v-on:click="isHidden = !isHidden">Показати деталі</a>
+        <a v-if="!isHidden" v-on:click="isHidden = !isHidden">Приховати деталі</a>
+      </div>
+      <div v-if="!isHidden">
+        <div>Ресторан: {{ order.restaurant.name }}</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань від замовлення до ресторану:
+          ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
+        </div>
+        <div>Страви:
+          <table>
+            <tbody>
+              <tr v-for="dish in dishes">
+                <td class="uk-width-1-2">{{ dish.name }}</td>
+                <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
+                <td class="uk-table-shrink">{{ dish.quantity }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>Примітки: {{ order.order_details }}</div>
+      </div>
       <button class="uk-button green" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger" @click="cancel_order">Відмінити замовлення</button>
     </div>
@@ -13,13 +38,20 @@
 import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
 import {mapActions, mapGetters} from "vuex";
+import OrderHelper from "@/utils/OrderHelper";
 
 export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
   data: () => ({
     interval: null,
+    isHidden: true,
+    order: null,
+    dishes: [],
   }),
+  async fetch() {
+    await this.getDetails()
+  },
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
   },
@@ -30,6 +62,41 @@ export default {
     clearInterval(this.interval)
   },
   methods: {
+    decimalPrice: OrderHelper.decimalPrice,
+    haversine_distance: OrderHelper.haversine_distance,
+    async getDetails() {
+      try {
+        this.loading = true
+        console.log(this.order_id);
+        let response = await this.$axios.$get('/courier-orders/' + this.order_id);
+        console.log(response);
+        this.loading = false
+        this.dishes = response.dishes
+        this.order = response.order
+      } catch (err) {
+        this.loading = false
+        if (!err.response) {
+          this.$toast.error("Помилка мережі", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err)
+        } else {
+          if (Number(err.response.status) === 404) {
+            this.$toast.error("Такого замовлення не існує", {
+              toastClassName: ['uk-margin-top']
+            })
+            await this.$router.push('/profile')
+          } else {
+            await this.$router.push('/profile')
+
+            this.$toast.error("Сталася помилка", {
+              toastClassName: ['uk-margin-top']
+            })
+            console.error(err.response.data)
+          }
+        }
+      }
+    },
     async send_update() {
       if (this.order_exists) {
         try {
@@ -124,7 +191,23 @@ export default {
       order_exists: 'courier/order_exists',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
-    })
+    }),
+    longitude: {
+      get() {
+        return this.$store.getters['courier/courier_location'].longitude
+      },
+      set(value) {
+        this.$store.dispatch('courier/do_set_courier_longitude', value)
+      }
+    },
+    latitude: {
+      get() {
+        return this.$store.getters['courier/courier_location'].latitude
+      },
+      set(value) {
+        this.$store.dispatch('courier/do_set_courier_latitude', value)
+      }
+    },
   },
 }
 </script>

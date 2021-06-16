@@ -20,8 +20,6 @@
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
-        <div>Страви: {{ dishes }}</div>
-        <div>Примітки: {{ order.order_details }}</div>
       </div>
       <button class="uk-button uk-button-primary" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
     </div>
