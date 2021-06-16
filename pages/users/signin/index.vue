@@ -22,12 +22,12 @@
               </div>
               <div class="uk-margin">
                 <label class="uk-form-label">Емейл</label>
-                <input class="uk-input" v-model="username" type="email" placeholder="your.email@gmail.com">
+                <input class="uk-input" v-model="username" type="email" placeholder="your.email@gmail.com" required>
               </div>
 
               <div class="uk-margin">
                 <label class="uk-form-label">Пароль</label>
-                <input class="uk-input" v-model="password" type="password">
+                <input class="uk-input" v-model="password" type="password" required>
               </div>
 
               <div class="uk-margin">
