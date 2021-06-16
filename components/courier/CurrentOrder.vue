@@ -1,6 +1,6 @@
 <template>
   <div class="uk-card uk-card-default uk-margin">
-    <div class="uk-card-body">
+    <div v-if="loaded" class="uk-card-body">
       <div>Замовлення № {{ order_id }}</div>
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
@@ -46,11 +46,14 @@ export default {
   data: () => ({
     interval: null,
     isHidden: true,
+    loaded: false,
     order: null,
     dishes: [],
   }),
   async fetch() {
-    await this.getDetails()
+    await this.getDetails().then(() => {
+      this.loaded = true
+    })
   },
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
