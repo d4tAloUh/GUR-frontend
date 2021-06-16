@@ -8,11 +8,21 @@
         </p>
       </div>
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
+      <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
-<!--      <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>-->
-<!--      <div>Відстань від замовлення до ресторану:-->
-<!--        ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км-->
-<!--      </div>-->
+      <div>
+        <a v-if="isHidden" v-on:click="isHidden = !isHidden">Показати деталі</a>
+        <a v-if="!isHidden" v-on:click="isHidden = !isHidden">Приховати деталі</a>
+      </div>
+      <div v-if="!isHidden">
+        <div>Ресторан: {{ order.restaurant.name }}</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань від замовлення до ресторану:
+          ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
+        </div>
+        <div>Страви: {{ dishes }}</div>
+        <div>Примітки: {{ order.order_details }}</div>
+      </div>
       <button class="uk-button uk-button-primary" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
     </div>
   </div>
@@ -25,6 +35,9 @@ import OrderHelper from "~/utils/OrderHelper";
 export default {
   name: "CourierOrder",
   props: ["order"],
+  data: () => ({
+    isHidden: true,
+  }),
   computed: {
 
     ...mapGetters({
