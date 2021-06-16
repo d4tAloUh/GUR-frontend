@@ -57,8 +57,8 @@ export default {
       try {
         const response = await this.$axios.$post("/orders/recreate/" + this.order.order_id);
         await this.set_order(response.order.order_id)
-        await this.set_rest_id(response.restaurant.rest_id)
         await this.set_dishes(response.dishes)
+        await this.set_rest_id(response.restaurant)
         await this.$router.push("users/orders/create")
       } catch (err) {
         if (!err.response) {
