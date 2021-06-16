@@ -48,7 +48,6 @@
             <Loading/>
           </div>
           <OrderComponent v-else v-for="order in orders" :key="order.order_id" :order="order">
-
           </OrderComponent>
           <div v-if="orders.length === 0">
             <img src="https://ik.imagekit.io/alouh/misc/pixeltrue-space-discovery_oz4baq5bKA5h.svg"
