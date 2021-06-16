@@ -32,7 +32,7 @@
 
               <div class="uk-margin">
                 <button class="uk-button uk-button-primary uk-width-1-1" :disabled="loading"
-                        @click="handleSubmit({username,password})">
+                        type="submit">
                   Відправити
                 </button>
               </div>
@@ -62,6 +62,7 @@
 <script>
 import {mapMutations, mapActions, mapGetters} from 'vuex'
 import ToggleButton from "~/components/misc/ToggleButton";
+import _ from "lodash";
 
 export default {
   name: "signin",
@@ -76,10 +77,10 @@ export default {
     update_as_courier: function (value) {
       this.as_courier = value
     },
-    async handleSubmit({username, password}) {
+    handleSubmit: _.debounce(async function() {
       try {
         this.loading = true
-        await this.login({username, password})
+        await this.login({username:this.username, password:this.password})
         try {
           await this.getUser(this.as_courier)
           this.loading = false
@@ -124,7 +125,9 @@ export default {
         }
       }
 
-    },
+    }, 2000, {
+      leading: true, trailing: false
+    }),
     ...mapActions({
       login: 'authorization/login',
       getUser: 'authorization/getUser',
