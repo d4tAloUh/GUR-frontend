@@ -8,12 +8,20 @@
         </p>
       </div>
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
+      <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
-<!--      <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>-->
-<!--      <div>Відстань від замовлення до ресторану:-->
-<!--        ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км-->
-<!--      </div>-->
-      <button class="uk-button uk-button-primary" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
+      <div>
+        <a v-if="!showDetails" v-on:click="toggleDetails">Показати деталі</a>
+        <a v-else v-on:click="toggleDetails">Приховати деталі</a>
+      </div>
+      <div v-if="showDetails">
+        <div>Ресторан: {{ order.restaurant.name }}</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань від замовлення до ресторану:
+          ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
+        </div>
+      </div>
+      <button class="uk-button uk-button-primary uk-margin-top" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
     </div>
   </div>
 </template>
@@ -25,8 +33,10 @@ import OrderHelper from "~/utils/OrderHelper";
 export default {
   name: "CourierOrder",
   props: ["order"],
+  data: () => ({
+    showDetails: false,
+  }),
   computed: {
-
     ...mapGetters({
       courier_location: 'courier/courier_location'
     }),
@@ -52,13 +62,15 @@ export default {
     ...mapActions({
       saveOrder: 'courier/do_set_order'
     }),
+    toggleDetails() {
+      this.showDetails = !this.showDetails
+    },
     haversine_distance: OrderHelper.haversine_distance,
     acceptOrder: async function (order_id) {
       try {
         const response = await this.$axios.$put('/courier/orders/free/' + order_id, {
           courier_location: this.courier_location
         });
-        console.log(response)
         await this.saveOrder(response)
       } catch (err) {
         if (!err.response) {
