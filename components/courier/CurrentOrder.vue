@@ -11,7 +11,7 @@
       <div>Адреса доставки: {{ order.delivery_address }}</div>
       <div v-if="profile">
         <div>Ім'я замовника: {{ profile.first_name }}</div>
-        <div>Номер для зв'язку: {{ profile.tel_num }}</div>
+        <div>Номер для зв'язку: <a v-bind:href="`tel:+` + profile.tel_num">{{ profile.tel_num }}</a></div>
       </div>
       <div>
         <button v-if="!showDetails" v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">
