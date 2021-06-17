@@ -11,13 +11,19 @@
       </div>
       <div v-if="!isHidden">
         <div>Ресторан: {{ order.restaurant.name }}</div>
-        <div>Відстань до ресторану: ~{{ haversine_distance(current_order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
-        <div>Страви:
+        <div>
           <table>
+            <caption>Страви</caption>
             <tbody>
+              <tr>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+              </tr>
               <tr v-for="dish in dishes">
                 <td class="uk-width-1-2">{{ dish.name }}</td>
                 <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
@@ -71,8 +77,8 @@ export default {
       try {
         this.loading = true
         console.log(this.order_id);
-        let response = await this.$axios.$get('/courier-orders/' + this.order_id);
-        console.log(response);
+        let response = await this.$axios.$get('/courier/orders/current');
+        console.log("HEERREE",response);
         this.loading = false
         this.dishes = response.dishes
         this.order = response.order
@@ -191,7 +197,6 @@ export default {
   computed: {
     ...mapGetters({
       order_id: 'courier/order_id',
-      current_order: 'courier/order',
       order_exists: 'courier/order_exists',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
