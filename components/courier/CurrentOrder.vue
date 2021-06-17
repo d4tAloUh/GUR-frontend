@@ -11,7 +11,7 @@
       </div>
       <div v-if="!isHidden">
         <div>Ресторан: {{ order.restaurant.name }}</div>
-        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(current_order.restaurant.location, {longitude, latitude}) }} км</div>
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
@@ -30,7 +30,6 @@
       </div>
       <button class="uk-button green" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger" @click="cancel_order">Відмінити замовлення</button>
-      <div>{{ current_order.restaurant.location }}</div>
     </div>
   </div>
 </template>
