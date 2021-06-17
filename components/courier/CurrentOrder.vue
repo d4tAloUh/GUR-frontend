@@ -9,10 +9,10 @@
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
       <div>
-        <button v-if="isHidden" v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Показати деталі</button>
+        <button v-if="!showDetails" v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Показати деталі</button>
         <button v-else v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі</button>
       </div>
-      <div v-if="!isHidden">
+      <div v-if="showDetails">
         <div>Ресторан: {{ order.restaurant.name }}</div>
         <div>Відстань до ресторану: ~{{ haversine_distance(current_order.restaurant.location, {longitude, latitude}) }} км</div>
         <div>Відстань від замовлення до ресторану:
@@ -62,7 +62,7 @@ export default {
   },
   data: () => ({
     interval: null,
-    isHidden: true,
+    showDetails: false,
     order: null,
     dishes: [],
   }),
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     toggleOpen() {
-      this.isHidden = !this.isHidden
+      this.showDetails = !this.showDetails
     },
     decimalPrice: OrderHelper.decimalPrice,
     haversine_distance: OrderHelper.haversine_distance,
