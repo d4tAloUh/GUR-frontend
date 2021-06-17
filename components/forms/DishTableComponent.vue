@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     post_delete: async function () {
-      await this.$axios.$delete('/restaurant-dishes/' + this.dish.dish_id, {
+      await this.$axios.$delete('/restaurant-dishes-exact/' + this.dish.dish_id, {
         data: {
           'dish_id': this.dish.dish_id
         }

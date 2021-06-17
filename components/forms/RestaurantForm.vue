@@ -7,33 +7,34 @@
       </div>
       <legend class="uk-legend" v-if="!to_create">Зміна ресторану <b>{{ restaurant.name }}</b></legend>
       <legend class="uk-legend" v-else>Створення ресторану <b>{{ restaurant.name }}</b></legend>
-
-      <div class="uk-margin">
-        <label>Назва ресторану</label>
-        <input type="text" name="name" v-model="restaurant.name " required class="uk-input"
-               v-bind:class="(restaurant.name.length===0)?'uk-form-danger':'uk-form-success'"/>
-      </div>
-      <div class="uk-margin">
-        <label>Адреса ресторану</label>
-        <input type="text" name="rest_address" v-model="restaurant.rest_address" required class="uk-input"
-               v-bind:class="(restaurant.rest_address.length===0)?'uk-form-danger':'uk-form-success'"/>
-      </div>
-      <div class="uk-margin">
-        <label>Посилання на фото ресторану</label>
-        <input type="text" name="rest_photo" v-model="restaurant.rest_photo" class="uk-input"/>
-      </div>
-      <div class="uk-margin">
-        <label>Відкрито з</label>
-        <input type="time" name="open_from" v-model="restaurant.open_from" class="uk-input"/>
-      </div>
-      <div class="uk-margin">
-        <label>Відкрито до</label>
-        <input type="time" name="open_to" v-model="restaurant.open_to" class="uk-input"/>
-      </div>
-      <div class="uk-align-right">
-        <button class="uk-button uk-button-success" @click="post_create" v-if="to_create">Створити</button>
-        <button class="uk-button uk-button-primary" @click="post_update" v-else>Змінити</button>
-      </div>
+      <form @submit.prevent="form_method">
+        <div class="uk-margin">
+          <label>Назва ресторану</label>
+          <input type="text" name="name" v-model="restaurant.name " required class="uk-input"
+                 v-bind:class="(restaurant.name.length===0)?'uk-form-danger':'uk-form-success'"/>
+        </div>
+        <div class="uk-margin">
+          <label>Адреса ресторану</label>
+          <input type="text" name="rest_address" v-model="restaurant.rest_address" required class="uk-input"
+                 v-bind:class="(restaurant.rest_address.length===0)?'uk-form-danger':'uk-form-success'"/>
+        </div>
+        <div class="uk-margin">
+          <label>Посилання на фото ресторану</label>
+          <input type="text" name="rest_photo" v-model="restaurant.rest_photo" class="uk-input"/>
+        </div>
+        <div class="uk-margin">
+          <label>Відкрито з</label>
+          <input type="time" name="open_from" v-model="restaurant.open_from" class="uk-input"/>
+        </div>
+        <div class="uk-margin">
+          <label>Відкрито до</label>
+          <input type="time" name="open_to" v-model="restaurant.open_to" class="uk-input"/>
+        </div>
+        <div class="uk-align-right">
+          <button class="uk-button uk-button-success" type="submit" v-if="to_create">Створити</button>
+          <button class="uk-button uk-button-primary" type="submit" v-else>Змінити</button>
+        </div>
+      </form>
     </fieldset>
   </div>
 </template>
@@ -177,6 +178,11 @@ export default {
         })
     }
   },
+  computed: {
+    form_method() {
+      return this.to_create ? this.post_create : this.post_update
+    }
+  }
 }
 </script>
 
