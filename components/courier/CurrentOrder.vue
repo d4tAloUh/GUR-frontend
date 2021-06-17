@@ -9,8 +9,8 @@
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
       <div>
-        <a v-if="isHidden" v-on:click="isHidden = !isHidden">Показати деталі</a>
-        <a v-if="!isHidden" v-on:click="isHidden = !isHidden">Приховати деталі</a>
+        <button v-if="isHidden" v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Показати деталі</button>
+        <button v-else v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі</button>
       </div>
       <div v-if="!isHidden">
         <div>Ресторан: {{ order.restaurant.name }}</div>
@@ -37,7 +37,7 @@
             </tbody>
           </table>
         </div>
-        <div>Примітки: {{ order.order_details }}</div>
+        <div v-if="order.order_details.length !== 0">Примітки: {{ order.order_details }}</div>
       </div>
 
       <button class="uk-button green uk-margin-top" @click="finish_order">Доставлено</button>
@@ -79,6 +79,9 @@ export default {
     clearInterval(this.interval)
   },
   methods: {
+    toggleOpen() {
+      this.isHidden = !this.isHidden
+    },
     decimalPrice: OrderHelper.decimalPrice,
     haversine_distance: OrderHelper.haversine_distance,
     async getDetails() {
