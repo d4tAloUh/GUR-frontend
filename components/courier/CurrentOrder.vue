@@ -9,12 +9,12 @@
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
       <div>
-        <button v-if="!showDetails" v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Показати деталі</button>
-        <button v-else v-on:click="toggleOpen" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі</button>
+        <button v-if="!showDetails" v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">Показати деталі</button>
+        <button v-else v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі</button>
       </div>
       <div v-if="showDetails">
         <div>Ресторан: {{ order.restaurant.name }}</div>
-        <div>Відстань до ресторану: ~{{ haversine_distance(current_order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
@@ -39,10 +39,8 @@
         </div>
         <div v-if="order.order_details.length !== 0">Примітки: {{ order.order_details }}</div>
       </div>
-
       <button class="uk-button green uk-margin-top" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger uk-margin-top" @click="cancel_order">Відмінити замовлення</button>
-
     </div>
   </div>
 </template>
@@ -79,7 +77,7 @@ export default {
     clearInterval(this.interval)
   },
   methods: {
-    toggleOpen() {
+    toggleDetails() {
       this.showDetails = !this.showDetails
     },
     decimalPrice: OrderHelper.decimalPrice,
@@ -204,7 +202,6 @@ export default {
     ...mapGetters({
       order_id: 'courier/order_id',
       order_exists: 'courier/order_exists',
-      current_order: 'courier/order',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
     }),

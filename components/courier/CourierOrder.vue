@@ -11,10 +11,10 @@
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
       <div>
-        <a v-if="isHidden" v-on:click="isHidden = !isHidden">Показати деталі</a>
-        <a v-if="!isHidden" v-on:click="isHidden = !isHidden">Приховати деталі</a>
+        <a v-if="!showDetails" v-on:click="toggleDetails">Показати деталі</a>
+        <a v-else v-on:click="toggleDetails">Приховати деталі</a>
       </div>
-      <div v-if="!isHidden">
+      <div v-if="showDetails">
         <div>Ресторан: {{ order.restaurant.name }}</div>
         <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
         <div>Відстань від замовлення до ресторану:
@@ -34,10 +34,9 @@ export default {
   name: "CourierOrder",
   props: ["order"],
   data: () => ({
-    isHidden: true,
+    showDetails: false,
   }),
   computed: {
-
     ...mapGetters({
       courier_location: 'courier/courier_location'
     }),
@@ -63,13 +62,15 @@ export default {
     ...mapActions({
       saveOrder: 'courier/do_set_order'
     }),
+    toggleDetails() {
+      this.showDetails = !this.showDetails
+    },
     haversine_distance: OrderHelper.haversine_distance,
     acceptOrder: async function (order_id) {
       try {
         const response = await this.$axios.$put('/courier/orders/free/' + order_id, {
           courier_location: this.courier_location
         });
-        console.log(response)
         await this.saveOrder(response)
       } catch (err) {
         if (!err.response) {
