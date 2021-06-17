@@ -118,14 +118,11 @@ export default {
     decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {
       try {
-        this.loading = true
         let response = await this.$axios.$get('/user-orders/' + this.$route.params.id);
-        this.loading = false
         this.dishes = response.dishes
         this.order = response.order
         await this.connectSocket();
       } catch (err) {
-        this.loading = false
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']

@@ -20,7 +20,6 @@ export default {
   middleware: [admin, auth],
   data: () => ({
     dish: Object,
-    loading: true,
   }),
   activated() {
     if (!this.$store.getters['authorization/admin'] && !this.$store.getters['authorization/partial_admin']) {
@@ -32,16 +31,12 @@ export default {
     if (!this.dish_passed) {
       await this.getDish()
     }
-    else{
-      this.loading = false
-    }
   },
   methods: {
     async getDish() {
       try {
         let response = await this.$axios.$get('/restaurant-dishes-exact/' + this.$route.params.id)
         this.dish = response.dish
-        this.loading = false
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
