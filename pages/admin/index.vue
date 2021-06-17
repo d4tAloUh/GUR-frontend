@@ -11,10 +11,9 @@
         <div v-if="$fetchState.pending">
           <Loading/>
         </div>
-
         <template v-for="restaurant in restaurants" v-else>
           <KeepAlive>
-            <Restaurant :restaurant=restaurant location_to="admin-restaurant-id"></Restaurant>
+            <Restaurant :restaurant=restaurant location_to="admin-restaurant-id" :as_admin="true"></Restaurant>
           </KeepAlive>
         </template>
         <div v-if="restaurants.length === 0">

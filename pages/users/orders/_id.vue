@@ -43,6 +43,9 @@
             <div v-if="order.order_details">
               <p>Коментар: {{ order.order_details }}</p>
             </div>
+            <button class="uk-button uk-align-left uk-button-primary" v-on:click="recreate_order">Створити замовлення з
+              цього
+            </button>
           </div>
         </div>
         <div class="uk-width-expand">
@@ -72,6 +75,7 @@
               </tr>
               </tbody>
             </table>
+
           </div>
         </div>
       </div>
@@ -93,6 +97,7 @@ import setted from "~/middleware/setted";
 import onlyClient from "~/middleware/onlyClient";
 import OrderHelper from "~/utils/OrderHelper";
 import UserOrderMap from "~/components/GoogleMaps/UserOrderMap";
+import {mapActions} from "vuex";
 
 
 export default {
@@ -105,7 +110,7 @@ export default {
     order: null,
     interval: null
   }),
-  async beforeMount() {
+  async fetch(){
     await this.getDetails();
   },
   deactivated() {
@@ -181,6 +186,32 @@ export default {
       this.interval = setInterval(this.connectSocket, 2000)
       this.connected = false
     },
+    async recreate_order() {
+      try {
+        const response = await this.$axios.$post("/orders/recreate/" + this.order.order_id);
+        await this.set_order(response.order.order_id)
+        await this.set_dishes(response.dishes)
+        await this.set_rest_id(response.restaurant)
+        await this.$router.push("/users/orders/create")
+      } catch (err) {
+        if (!err.response) {
+          this.$toast.error("Помилка мережі", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err)
+        } else {
+          this.$toast.error(err.response.data.error || "Сталася помилка, коли створювали подбіне замовлення", {
+            toastClassName: ['uk-margin-top']
+          })
+          console.error(err.response)
+        }
+      }
+    },
+    ...mapActions({
+      set_order: 'cart/setOrder',
+      set_rest_id: 'cart/setRest',
+      set_dishes: 'cart/doSetItems'
+    }),
   },
   computed: {
     token: {

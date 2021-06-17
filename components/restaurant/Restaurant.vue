@@ -14,7 +14,7 @@
           <div v-else>Працює цілодобово</div>
         </div>
         <NuxtLink :to="{ name: location_to, params: { id: restaurant.rest_id, restaurant}}" tag="a"
-                  class="uk-button uk-button-primary" v-if="restaurant.is_open">Переглянути страви
+                  class="uk-button uk-button-primary" v-if="restaurant.is_open || as_admin">Переглянути страви
         </NuxtLink>
         <div v-else>Ресторан зачинений</div>
       </div>
@@ -25,7 +25,7 @@
 <script>
 export default {
   name: "Restaurant",
-  props: ['restaurant','location_to']
+  props: ['restaurant','location_to', 'as_admin']
 }
 </script>
 

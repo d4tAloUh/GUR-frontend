@@ -80,7 +80,7 @@ export default {
         this.$toast.success("Успішна реєстрація, увійдіть у аккаунт.", {
           toastClassName: ['uk-margin-top']
         })
-        await this.$router.push('/users/signin')
+        await this.$router.push({name: 'users-signin', params: {as_courier: true}})
       } catch (err) {
         this.loading = false;
         if (!err.response)

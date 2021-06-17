@@ -68,6 +68,7 @@ export const actions = {
             commit('setItems', [])
         })
     }
+    return null
   },
   async addItem({commit, state, dispatch}, item) {
     if (item.restaurant_id !== state.rest_id && Number(state.rest_id) !== 0)
@@ -94,7 +95,6 @@ export const actions = {
         if (Number(state.rest_id) === 0 || typeof state.rest_id === 'undefined')
           commit('setRestId', item.restaurant_id)
       }).catch(err => {
-        // commit('delete', item)
         console.error(err.response)
       })
     } else {
@@ -109,7 +109,6 @@ export const actions = {
           commit('setRestId', item.restaurant_id)
       })
         .catch(err => {
-          // commit('reduceQuantity', record)
           console.error(err.response)
         })
     }

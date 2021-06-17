@@ -8,7 +8,6 @@
       <button class="uk-button uk-button-danger" @click="post_delete">Видалити</button>
       <NuxtLink :to="{ name: 'admin-dish-id', params: { id: dish.dish_id, dish}}" tag="a"
                 class="uk-button uk-button-primary">Змінити
-
       </NuxtLink>
     </td>
   </tr>
@@ -34,7 +33,7 @@ export default {
   },
   methods: {
     post_delete: async function () {
-      await this.$axios.$delete('/restaurant-dishes/' + this.dish.dish_id, {
+      await this.$axios.$delete('/restaurant-dishes-exact/' + this.dish.dish_id, {
         data: {
           'dish_id': this.dish.dish_id
         }

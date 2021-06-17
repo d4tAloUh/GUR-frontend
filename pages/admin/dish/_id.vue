@@ -26,12 +26,13 @@ export default {
       return error({statusCode: 404, message: ''})
     }
   },
-  async created() {
-    this.dish = this.dish_passed
-    if (!this.dish_passed) {
-      await this.getDish()
-    }
+  async fetch(){
+      this.dish = this.dish_passed
+      if (!this.dish_passed) {
+        await this.getDish()
+      }
   },
+
   methods: {
     async getDish() {
       try {

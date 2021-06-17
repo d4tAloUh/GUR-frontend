@@ -48,10 +48,11 @@ export default {
       return error({ statusCode: 404, message: '' })
     }
   },
-  async created() {
+  async fetch(){
     this.restaurant = this.restaurant_passed
     await this.getDishes();
   },
+
   methods: {
     async getDishes() {
       try {

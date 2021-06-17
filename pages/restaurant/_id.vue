@@ -115,10 +115,8 @@ export default {
     },
     ...mapActions({
       removeFromCart: 'cart/removeItem',
+      clearCart: 'cart/emptyCart'
     }),
-    async clearCart() {
-      await this.$store.dispatch('cart/emptyCart')
-    },
     decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {

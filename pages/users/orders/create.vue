@@ -115,6 +115,7 @@ export default {
     ...mapActions({
       removeFromCart: 'cart/removeItem',
       deleteFromCart: 'cart/deleteItem',
+      clearCart: 'cart/emptyCart'
     }),
     sendCart: async function () {
       if (this.order_location.length !== 0 && this.address.length !== 0) {
@@ -123,6 +124,7 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         } else if (this.selectedDishes.length > 0 && this.rest_id !== 0) {
+          console.log(this.rest_id, this.selectedDishes)
           await this.$axios.$put('/orders/' + this.order_id, {
             "order_details": this.order_details,
             "delivery_location":{
@@ -151,15 +153,11 @@ export default {
               }
               else{
                 if (err.response.data && err.response.data.error){
-                    this.clearCart()
                     this.$toast.error(err.response.data.error, {
                       toastClassName: ['uk-margin-top']
                     })
+                  this.clearCart()
                 }
-                else
-                this.$toast.error(err.response.data.error || "Сталася помилка", {
-                  toastClassName: ['uk-margin-top']
-                })
                 console.error(err.response)
               }
             })
@@ -201,9 +199,6 @@ export default {
       this.accepted = false
       Uikit.modal('.address-confirmation').toggle()
     },
-    async clearCart() {
-      await this.$store.dispatch('cart/emptyCart')
-    },
     decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {
@@ -226,8 +221,6 @@ export default {
       }
     }
   }
-
-
 }
 </script>
 

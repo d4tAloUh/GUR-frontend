@@ -22,7 +22,7 @@
               </div>
             </div>
           </fieldset>
-          <button class="uk-button uk-button-default uk-align-right green">Відправити</button>
+          <button class="uk-button uk-button-default uk-align-right green" type="submit">Відправити</button>
         </form>
       </div>
     </div>
