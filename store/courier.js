@@ -36,6 +36,9 @@ export const getters = {
   order_exists: (state) => {
     return !!state.order
   },
+  order: (state) => {
+    return state.order
+  },
   courier_working: (state) => {
     return state.courier_working
   },

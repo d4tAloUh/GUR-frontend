@@ -122,7 +122,7 @@ export default {
           this.$toast.info("Спочатку підтвердіть адресу доставки", {
             toastClassName: ['uk-margin-top']
           })
-        } else {
+        } else if (this.selectedDishes.length > 0 && this.rest_id !== 0) {
           await this.$axios.$put('/orders/' + this.order_id, {
             "order_details": this.order_details,
             "delivery_location":{
@@ -150,9 +150,9 @@ export default {
                 console.error(err)
               }
               else{
-                if (err.response.data && err.response.data.error && err.response.data.error === 'Ваше замовлення пусте'){
+                if (err.response.data && err.response.data.error){
                     this.clearCart()
-                    this.$toast.error("Таких страв більше не існує", {
+                    this.$toast.error(err.response.data.error, {
                       toastClassName: ['uk-margin-top']
                     })
                 }
