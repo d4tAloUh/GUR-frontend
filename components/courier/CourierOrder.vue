@@ -21,7 +21,7 @@
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
       </div>
-      <button class="uk-button uk-button-primary" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
+      <button class="uk-button uk-button-primary uk-margin-top" @click="acceptOrder(order.order_id)">Взяти замовлення</button>
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="uk-card uk-card-default uk-margin">
     <div v-if="loaded" class="uk-card-body">
-      <div>Замовлення № {{ order_id }}</div>
+      <h3>Замовлення № {{ order_id }}</h3>
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
@@ -15,17 +15,17 @@
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
-        <div>
+        <div class="uk-margin-top">
           <table class="uk-table uk-table-divider">
-            <caption>Страви</caption>
+            <caption><h5>Страви</h5></caption>
+            <thead>
+              <tr>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+              </tr>
+            </thead>
             <tbody>
-              <thead>
-                <tr>
-                  <th>Назва</th>
-                  <th>Ціна</th>
-                  <th>Кількість</th>
-                </tr>
-              </thead>
               <tr v-for="dish in dishes">
                 <td class="uk-width-1-2">{{ dish.name }}</td>
                 <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
@@ -36,8 +36,10 @@
         </div>
         <div>Примітки: {{ order.order_details }}</div>
       </div>
-      <button class="uk-button green" @click="finish_order">Доставлено</button>
-      <button class="uk-button uk-button-danger" @click="cancel_order">Відмінити замовлення</button>
+
+      <button class="uk-button green uk-margin-top" @click="finish_order">Доставлено</button>
+      <button class="uk-button uk-button-danger uk-margin-top" @click="cancel_order">Відмінити замовлення</button>
+
     </div>
   </div>
 </template>
