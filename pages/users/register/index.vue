@@ -62,7 +62,7 @@ import _ from "lodash";
 import ResErrorHandler from "~/utils/ResErrorHandler";
 
 export default {
-  name: "register",
+  name: "register_user",
   data: () => ({
     email: '',
     password: '',
