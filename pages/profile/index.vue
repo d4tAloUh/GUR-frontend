@@ -15,20 +15,20 @@
           <form @submit.prevent="send_update" class="uk-form-horizontal">
             <fieldset class="uk-fieldset">
               <legend class="uk-legend uk-text-center">Налаштування</legend>
-              <div class="uk-margin">
-                <label class="uk-form-label uk-text-bold" for="first_name">Ваше ім'я</label>
-                <div class="uk-form-controls">
-                  <input class="uk-input" id="first_name" type="text" placeholder="Ігор.." v-model="first_name"
-                         :disabled=!update_profile required maxlength="70">
+                <div class="uk-margin">
+                  <label class="uk-form-label uk-text-bold" for="first_name">Ваше ім'я</label>
+                  <div class="uk-form-controls">
+                    <input class="uk-input" id="first_name" type="text" placeholder="Ігор.." v-model="first_name"
+                           :disabled=!update_profile required maxlength="70" minlength="2">
+                  </div>
                 </div>
-              </div>
-              <div class="uk-margin">
-                <label class="uk-form-label uk-text-bold" for="tel_num">Ваш номер телефону</label>
-                <div class="uk-form-controls">
-                  <input class="uk-input" id="tel_num" type="tel" placeholder="380.." v-model="tel_num"
-                         :disabled=!update_profile required maxlength="12">
+                <div class="uk-margin">
+                  <label class="uk-form-label uk-text-bold" for="tel_num">Ваш номер телефону</label>
+                  <div class="uk-form-controls">
+                    <input class="uk-input" id="tel_num" type="tel" placeholder="380.." v-model="tel_num"
+                           :disabled=!update_profile required maxlength="12" minlength="12">
+                  </div>
                 </div>
-              </div>
             </fieldset>
             <button class="uk-button uk-button-default uk-align-right green" v-if="update_profile">Змінити</button>
           </form>
@@ -137,9 +137,21 @@ export default {
         if (this.is_courier) {
           url = '/courier-profile'
         }
+        if (this.first_name.trim().length < 3){
+          this.$toast.warning("Введіть корректне ім'я", {
+            toastClassName: ['uk-margin-top']
+          })
+          return
+        }
+        if (this.tel_num.trim().length < 12){
+          this.$toast.warning("Введіть корректний номер телефону", {
+            toastClassName: ['uk-margin-top']
+          })
+          return
+        }
         await this.$axios.$put(url, {
-          "first_name": this.first_name,
-          "tel_num": this.tel_num
+          "first_name": this.first_name.trim(),
+          "tel_num": this.tel_num.trim()
         });
         this.$toast.success("Ваш профіль успішно оновлено", {
           toastClassName: ['uk-margin-top']
