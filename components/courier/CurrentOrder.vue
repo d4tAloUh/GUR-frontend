@@ -8,6 +8,8 @@
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
+      <div class="uk-text-bold">Замовник: {{ profile.first_name }}</div>
+      <div class="uk-text-bold">Номер для зв'язку: <a :href="'tel:+' + profile.tel_num">{{ profile.tel_num }}</a></div>
       <div>
         <a v-if="isHidden" v-on:click="isHidden = !isHidden">Показати деталі</a>
         <a v-if="!isHidden" v-on:click="isHidden = !isHidden">Приховати деталі</a>
@@ -64,6 +66,7 @@ export default {
     interval: null,
     isHidden: true,
     order: null,
+    profile: null,
     dishes: [],
   }),
   async fetch() {
@@ -84,6 +87,7 @@ export default {
     async getDetails() {
       try {
         let response = await this.$axios.$get('/courier-orders/' + this.order_id);
+        this.profile = response.profile
         this.dishes = response.dishes
         this.order = response.order
       } catch (err) {
