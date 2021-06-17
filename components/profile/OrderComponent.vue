@@ -58,7 +58,7 @@ export default {
         await this.set_order(response.order.order_id)
         await this.set_dishes(response.dishes)
         await this.set_rest_id(response.restaurant)
-        await this.$router.push("users/orders/create")
+        await this.$router.push("/users/orders/create")
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
