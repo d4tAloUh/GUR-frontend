@@ -1,20 +1,29 @@
 <template>
   <div class="uk-card uk-card-default uk-margin">
     <div v-if="$fetchState.pending">
-      <Loading />
+      <Loading/>
     </div>
     <div v-else class="uk-card-body">
       <h3>Замовлення № {{ order_id }}</h3>
+
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
+      <div v-if="profile">
+        <div>Ім'я замовника: {{ profile.first_name }}</div>
+        <div>Номер для зв'язку: {{ profile.tel_num }}</div>
+      </div>
       <div>
-        <button v-if="!showDetails" v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">Показати деталі</button>
-        <button v-else v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі</button>
+        <button v-if="!showDetails" v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">
+          Показати деталі
+        </button>
+        <button v-else v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі
+        </button>
       </div>
       <div v-if="showDetails">
         <div>Ресторан: {{ order.restaurant.name }}</div>
-        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км
+        </div>
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
@@ -22,18 +31,18 @@
           <table class="uk-table uk-table-divider">
             <caption><h5>Страви</h5></caption>
             <thead>
-              <tr>
-                <th>Назва</th>
-                <th>Ціна</th>
-                <th>Кількість</th>
-              </tr>
+            <tr>
+              <th>Назва</th>
+              <th>Ціна</th>
+              <th>Кількість</th>
+            </tr>
             </thead>
             <tbody>
-              <tr v-for="dish in dishes">
-                <td class="uk-width-1-2">{{ dish.name }}</td>
-                <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
-                <td class="uk-table-shrink">{{ dish.quantity }}</td>
-              </tr>
+            <tr v-for="dish in dishes">
+              <td class="uk-width-1-2">{{ dish.name }}</td>
+              <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
+              <td class="uk-table-shrink">{{ dish.quantity }}</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -63,6 +72,7 @@ export default {
     showDetails: false,
     order: null,
     dishes: [],
+    profile: null
   }),
   async fetch() {
     await this.getDetails()
@@ -87,6 +97,7 @@ export default {
         let response = await this.$axios.$get('/courier-orders/' + this.order_id);
         this.dishes = response.dishes
         this.order = response.order
+        this.profile = response.profile
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
