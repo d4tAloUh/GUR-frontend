@@ -73,6 +73,11 @@ export default {
     loading: false,
     as_courier: false
   }),
+  beforeMount() {
+    if (this.$route.params.as_courier){
+      this.as_courier = this.$route.params.as_courier
+    }
+  },
   methods: {
     update_as_courier: function (value) {
       this.as_courier = value

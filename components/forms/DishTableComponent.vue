@@ -8,7 +8,6 @@
       <button class="uk-button uk-button-danger" @click="post_delete">Видалити</button>
       <NuxtLink :to="{ name: 'admin-dish-id', params: { id: dish.dish_id, dish}}" tag="a"
                 class="uk-button uk-button-primary">Змінити
-
       </NuxtLink>
     </td>
   </tr>
