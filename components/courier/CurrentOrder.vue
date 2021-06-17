@@ -1,7 +1,7 @@
 <template>
   <div class="uk-card uk-card-default uk-margin">
     <div v-if="$fetchState.pending">
-      <Loading/>
+      <Loading />
     </div>
     <div v-else class="uk-card-body">
       <h3>Замовлення № {{ order_id }}</h3>
@@ -52,10 +52,14 @@ import auth from "~/middleware/auth";
 import setted from "~/middleware/setted";
 import {mapActions, mapGetters} from "vuex";
 import OrderHelper from "@/utils/OrderHelper";
+import Loading from "@/components/misc/LoadingBar";
 
 export default {
   name: "CurrentOrder",
   middleware: [auth, setted],
+  components: {
+    Loading
+  },
   data: () => ({
     interval: null,
     isHidden: true,
@@ -79,13 +83,10 @@ export default {
     haversine_distance: OrderHelper.haversine_distance,
     async getDetails() {
       try {
-        this.loading = true
         let response = await this.$axios.$get('/courier-orders/' + this.order_id);
-        this.loading = false
         this.dishes = response.dishes
         this.order = response.order
       } catch (err) {
-        this.loading = false
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']

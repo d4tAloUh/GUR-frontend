@@ -1,9 +1,8 @@
 <template>
   <div>
-    <div v-if="loading">
-      <LoadingBar/>
+    <div v-if="$fetchState.pending">
+      <Loading />
       <div class="uk-margin-top uk-text-center uk-text-large">Зачекайте будь ласка..</div>
-
     </div>
     <DishForm :dish="dish" v-else/>
   </div>
@@ -13,11 +12,11 @@
 import DishForm from "~/components/forms/DishForm";
 import admin from "~/middleware/admin";
 import auth from "~/middleware/auth";
-import LoadingBar from "~/components/misc/LoadingBar";
+import Loading from "~/components/misc/LoadingBar";
 
 export default {
   name: "admin-dish-id",
-  components: {DishForm, LoadingBar},
+  components: { DishForm, Loading },
   middleware: [admin, auth],
   data: () => ({
     dish: Object,
