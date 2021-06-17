@@ -66,8 +66,8 @@
           </textarea>
         </div>
         <div>
-          <button type="submit" class="uk-button uk-button-primary" name="button">Створити замовення</button>
-          <button class="uk-button uk-button-danger uk-float-right" @click="clearCart" >Прибрати усе з кошика</button>
+          <button type="submit" class="uk-button uk-button-primary" name="button" >Створити замовення</button>
+          <button class="uk-button uk-button-danger uk-float-right" @click="clearCart" type="button">Прибрати усе з кошика</button>
         </div>
       </form>
 
