@@ -30,6 +30,7 @@
       </div>
       <button class="uk-button green" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger" @click="cancel_order">Відмінити замовлення</button>
+      <div>{{ current_order.restaurant.location }}</div>
     </div>
   </div>
 </template>
@@ -191,6 +192,7 @@ export default {
   computed: {
     ...mapGetters({
       order_id: 'courier/order_id',
+      current_order: 'courier/order',
       order_exists: 'courier/order_exists',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
