@@ -16,14 +16,16 @@
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
         <div>
-          <table>
+          <table class="uk-table uk-table-divider">
             <caption>Страви</caption>
             <tbody>
-              <tr>
-                <th>Назва</th>
-                <th>Ціна</th>
-                <th>Кількість</th>
-              </tr>
+              <thead>
+                <tr>
+                  <th>Назва</th>
+                  <th>Ціна</th>
+                  <th>Кількість</th>
+                </tr>
+              </thead>
               <tr v-for="dish in dishes">
                 <td class="uk-width-1-2">{{ dish.name }}</td>
                 <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
@@ -76,11 +78,10 @@ export default {
     async getDetails() {
       try {
         this.loading = true
-        console.log(this.order_id);
         let response = await this.$axios.$get('/courier/orders/current');
-        console.log("HEERREE",response);
+        let response_dishes = await this.$axios.$get('/courier-orders/' + this.order_id);
         this.loading = false
-        this.dishes = response.dishes
+        this.dishes = response_dishes.dishes
         this.order = response.order
       } catch (err) {
         this.loading = false
