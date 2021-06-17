@@ -1,6 +1,9 @@
 <template>
   <div class="uk-card uk-card-default uk-margin">
-    <div v-if="loaded" class="uk-card-body">
+    <div v-if="$fetchState.pending">
+      <Loading/>
+    </div>
+    <div v-else class="uk-card-body">
       <h3>Замовлення № {{ order_id }}</h3>
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
@@ -11,7 +14,7 @@
       </div>
       <div v-if="!isHidden">
         <div>Ресторан: {{ order.restaurant.name }}</div>
-        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(current_order.restaurant.location, {longitude, latitude}) }} км</div>
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
@@ -56,14 +59,11 @@ export default {
   data: () => ({
     interval: null,
     isHidden: true,
-    loaded: false,
     order: null,
     dishes: [],
   }),
   async fetch() {
-    await this.getDetails().then(() => {
-      this.loaded = true
-    })
+    await this.getDetails()
   },
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
@@ -80,10 +80,9 @@ export default {
     async getDetails() {
       try {
         this.loading = true
-        let response = await this.$axios.$get('/courier/orders/current');
-        let response_dishes = await this.$axios.$get('/courier-orders/' + this.order_id);
+        let response = await this.$axios.$get('/courier-orders/' + this.order_id);
         this.loading = false
-        this.dishes = response_dishes.dishes
+        this.dishes = response.dishes
         this.order = response.order
       } catch (err) {
         this.loading = false
@@ -201,6 +200,7 @@ export default {
     ...mapGetters({
       order_id: 'courier/order_id',
       order_exists: 'courier/order_exists',
+      current_order: 'courier/order',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
     }),
