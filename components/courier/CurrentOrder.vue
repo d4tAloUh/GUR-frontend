@@ -1,22 +1,29 @@
 <template>
   <div class="uk-card uk-card-default uk-margin">
     <div v-if="$fetchState.pending">
-      <Loading />
+      <Loading/>
     </div>
     <div v-else class="uk-card-body">
       <h3>Замовлення № {{ order_id }}</h3>
+
       <div>Сума: {{ decimalPrice(order.summary) }}₴</div>
       <div>Адреса ресторану: {{ order.restaurant.rest_address }}</div>
       <div>Адреса доставки: {{ order.delivery_address }}</div>
-      <div class="uk-text-bold">Замовник: {{ profile.first_name }}</div>
-      <div class="uk-text-bold">Номер для зв'язку: <a :href="'tel:+' + profile.tel_num">{{ profile.tel_num }}</a></div>
-      <div>
-        <a v-if="isHidden" v-on:click="isHidden = !isHidden">Показати деталі</a>
-        <a v-if="!isHidden" v-on:click="isHidden = !isHidden">Приховати деталі</a>
+      <div v-if="profile">
+        <div>Ім'я замовника: {{ profile.first_name }}</div>
+        <div>Номер для зв'язку: {{ profile.tel_num }}</div>
       </div>
-      <div v-if="!isHidden">
+      <div>
+        <button v-if="!showDetails" v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">
+          Показати деталі
+        </button>
+        <button v-else v-on:click="toggleDetails" class="uk-button uk-margin-top uk-margin-bottom">Приховати деталі
+        </button>
+      </div>
+      <div v-if="showDetails">
         <div>Ресторан: {{ order.restaurant.name }}</div>
-        <div>Відстань до ресторану: ~{{ haversine_distance(current_order.restaurant.location, {longitude, latitude}) }} км</div>
+        <div>Відстань до ресторану: ~{{ haversine_distance(order.restaurant.location, {longitude, latitude}) }} км
+        </div>
         <div>Відстань від замовлення до ресторану:
           ~{{ haversine_distance(order.delivery_location, order.restaurant.location) }} км
         </div>
@@ -24,27 +31,25 @@
           <table class="uk-table uk-table-divider">
             <caption><h5>Страви</h5></caption>
             <thead>
-              <tr>
-                <th>Назва</th>
-                <th>Ціна</th>
-                <th>Кількість</th>
-              </tr>
+            <tr>
+              <th>Назва</th>
+              <th>Ціна</th>
+              <th>Кількість</th>
+            </tr>
             </thead>
             <tbody>
-              <tr v-for="dish in dishes">
-                <td class="uk-width-1-2">{{ dish.name }}</td>
-                <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
-                <td class="uk-table-shrink">{{ dish.quantity }}</td>
-              </tr>
+            <tr v-for="dish in dishes">
+              <td class="uk-width-1-2">{{ dish.name }}</td>
+              <td class="uk-table-shrink">{{ decimalPrice(dish.price) }}₴</td>
+              <td class="uk-table-shrink">{{ dish.quantity }}</td>
+            </tr>
             </tbody>
           </table>
         </div>
-        <div>Примітки: {{ order.order_details }}</div>
+        <div v-if="order.order_details.length !== 0">Примітки: {{ order.order_details }}</div>
       </div>
-
       <button class="uk-button green uk-margin-top" @click="finish_order">Доставлено</button>
       <button class="uk-button uk-button-danger uk-margin-top" @click="cancel_order">Відмінити замовлення</button>
-
     </div>
   </div>
 </template>
@@ -64,10 +69,10 @@ export default {
   },
   data: () => ({
     interval: null,
-    isHidden: true,
+    showDetails: false,
     order: null,
-    profile: null,
     dishes: [],
+    profile: null
   }),
   async fetch() {
     await this.getDetails()
@@ -82,14 +87,17 @@ export default {
     clearInterval(this.interval)
   },
   methods: {
+    toggleDetails() {
+      this.showDetails = !this.showDetails
+    },
     decimalPrice: OrderHelper.decimalPrice,
     haversine_distance: OrderHelper.haversine_distance,
     async getDetails() {
       try {
         let response = await this.$axios.$get('/courier-orders/' + this.order_id);
-        this.profile = response.profile
         this.dishes = response.dishes
         this.order = response.order
+        this.profile = response.profile
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -205,7 +213,6 @@ export default {
     ...mapGetters({
       order_id: 'courier/order_id',
       order_exists: 'courier/order_exists',
-      current_order: 'courier/order',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location'
     }),

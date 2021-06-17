@@ -41,7 +41,6 @@ export default {
   props: ["order"],
   components: {OrderStatusTitle},
   computed: {
-
     ...mapGetters({
       is_courier: 'authorization/isCourier'
     }),
