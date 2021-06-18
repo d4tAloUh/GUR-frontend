@@ -149,10 +149,13 @@ export default {
           })
           return
         }
-        await this.$axios.$put(url, {
+        let response = await this.$axios.$put(url, {
           "first_name": this.first_name.trim(),
           "tel_num": this.tel_num.trim()
         });
+        this.tel_num = response.tel_num
+        this.first_name = response.first_name
+
         this.$toast.success("Ваш профіль успішно оновлено", {
           toastClassName: ['uk-margin-top']
         })
@@ -167,7 +170,6 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         }
-
       } finally {
         this.update_profile = false
       }
