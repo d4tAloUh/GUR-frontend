@@ -155,10 +155,10 @@ export default {
         });
         this.tel_num = response.tel_num
         this.first_name = response.first_name
-
         this.$toast.success("Ваш профіль успішно оновлено", {
           toastClassName: ['uk-margin-top']
         })
+        this.update_profile = false
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -170,8 +170,6 @@ export default {
             toastClassName: ['uk-margin-top']
           })
         }
-      } finally {
-        this.update_profile = false
       }
     }, 2000, {leading: true, trailing: false})
   },
@@ -179,7 +177,6 @@ export default {
 </script>
 
 <style scoped>
-
 .green {
   background: green;
   color: white;
