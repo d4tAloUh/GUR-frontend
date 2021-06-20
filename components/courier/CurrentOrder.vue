@@ -197,11 +197,10 @@ export default {
         })
       }
     },
-    ...mapActions({
-      saveOrder: 'courier/do_set_order'
-    }),
     async clear_order(content) {
-      await this.saveOrder(null)
+      await (this.order = null)
+      await (this.dishes = null)
+      await (this.profile = null)
       clearInterval(this.interval)
       this.$toast.info(content, {
         toastClassName: ['uk-margin-top']
@@ -214,10 +213,31 @@ export default {
       order_exists: 'courier/order_exists',
       courier_working: 'courier/courier_working',
       location: 'courier/courier_location',
-      order: 'courier/order',
-      dishes: 'courier/order_dishes',
-      profile: 'courier/order_profile'
     }),
+    order: {
+      get() {
+        return this.$store.getters['courier/order']
+      },
+      set(value) {
+        this.$store.dispatch('courier/do_set_order', value)
+      }
+    },
+    dishes: {
+      get() {
+        return this.$store.getters['courier/order_dishes']
+      },
+      set(value) {
+        this.$store.dispatch('courier/do_set_order_dishes', value)
+      }
+    },
+    profile: {
+      get() {
+        return this.$store.getters['courier/order_profile']
+      },
+      set(value) {
+        this.$store.dispatch('courier/do_set_order_profile', value)
+      }
+    },
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude
