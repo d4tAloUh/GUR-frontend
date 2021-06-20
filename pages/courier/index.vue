@@ -151,9 +151,9 @@ export default {
           this.websocket.onclose = this.on_disconnect
           this.websocket.onmessage = this.on_message
           clearInterval(this.interval)
+        } else {
+          clearInterval(this.interval)
         }
-      } else {
-        clearInterval(this.interval)
       }
     },
     async filter_out_order(order_id) {
