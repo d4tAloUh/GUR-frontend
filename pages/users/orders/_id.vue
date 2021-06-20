@@ -110,7 +110,7 @@ export default {
     order: null,
     interval: null
   }),
-  async fetch(){
+  async created(){
     await this.getDetails();
   },
   deactivated() {

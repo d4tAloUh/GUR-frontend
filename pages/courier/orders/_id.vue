@@ -87,7 +87,7 @@ export default {
     dishes: [],
     order: null,
   }),
-  async fetch() {
+  async created() {
     await this.getDetails();
   },
   methods: {
@@ -97,6 +97,7 @@ export default {
         this.dishes = response.dishes
         this.order = response.order
       } catch (err) {
+        console.log(err.response)
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']
