@@ -72,7 +72,9 @@ export default {
     showDetails: false,
   }),
   async fetch() {
-    // await this.getDetails()
+    if (!this.dishes){
+      await this.getDetails()
+    }
   },
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
