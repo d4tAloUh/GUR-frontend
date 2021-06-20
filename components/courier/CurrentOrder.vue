@@ -70,12 +70,9 @@ export default {
   data: () => ({
     interval: null,
     showDetails: false,
-    order: null,
-    dishes: [],
-    profile: null
   }),
   async fetch() {
-    await this.getDetails()
+    // await this.getDetails()
   },
   mounted() {
     this.interval = setInterval(this.send_update, 5000)
@@ -214,7 +211,10 @@ export default {
       order_id: 'courier/order_id',
       order_exists: 'courier/order_exists',
       courier_working: 'courier/courier_working',
-      location: 'courier/courier_location'
+      location: 'courier/courier_location',
+      order: 'courier/order',
+      dishes: 'courier/order_dishes',
+      profile: 'courier/order_profile'
     }),
     longitude: {
       get() {

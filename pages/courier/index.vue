@@ -85,6 +85,8 @@ export default {
       try {
         let response = await this.$axios.$get('/courier/orders/current');
         await this.saveOrder(response.order)
+        await this.saveDishes(response.dishes)
+        await this.saveProfile(response.profile)
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -164,7 +166,9 @@ export default {
       this.$store.dispatch('courier/do_set_courier_working', value)
     },
     ...mapActions({
-      saveOrder: 'courier/do_set_order'
+      saveOrder: 'courier/do_set_order',
+      saveDishes: 'courier/do_set_order_dishes',
+      saveProfile: 'courier/do_set_order_profile'
     }),
   },
   computed: {
@@ -176,14 +180,6 @@ export default {
     server_url: function () {
       return process.env.server_url
     },
-    // markers: function () {
-    //   return this.available_orders.map((order => {
-    //     return {
-    //       id: order.order_id,
-    //       position: order.restaurant.location
-    //     }
-    //   }))
-    // },
     longitude: {
       get() {
         return this.$store.getters['courier/courier_location'].longitude
