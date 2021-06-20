@@ -78,8 +78,12 @@ export default {
   data: () => ({
     update_profile: false,
     orders: [],
-    websocket: null
+    websocket: null,
+    phone_regex: null
   }),
+  created() {
+    this.phone_regex = new RegExp('^(380)([0-9]{9})$')
+  },
   async fetch() {
     await this.retrieve_orders();
   },
@@ -143,8 +147,8 @@ export default {
           })
           return
         }
-        if (this.tel_num.trim().length < 12){
-          this.$toast.warning("Введіть корректний номер телефону", {
+        if (!this.phone_regex.test(this.tel_num)){
+          this.$toast.warning("Введіть корректний номер телефону 380..", {
             toastClassName: ['uk-margin-top']
           })
           return

@@ -38,17 +38,37 @@ import ResErrorHandler from "@/utils/ResErrorHandler";
 export default {
   name: "next",
   middleware: [auth, onlyCourier],
+  data: () => ({
+    phone_regex: null
+  }),
+  created() {
+    this.phone_regex = new RegExp('^(380)([0-9]{9})$')
+  },
   methods: {
     send_update: _.debounce(async function () {
       try {
-        await this.$axios.$put('/courier-profile', {
-          "first_name": this.first_name,
-          "tel_num": this.tel_num
+        if (this.first_name.trim().length < 3){
+          this.$toast.warning("Введіть корректне ім'я", {
+            toastClassName: ['uk-margin-top']
+          })
+          return
+        }
+        if (!this.phone_regex.test(this.tel_num)) {
+          this.$toast.warning("Введіть корректний номер телефону 380..", {
+            toastClassName: ['uk-margin-top']
+          })
+          return
+        }
+        let response = await this.$axios.$put('/user-profile', {
+          "first_name": this.first_name.trim(),
+          "tel_num": this.tel_num.trim()
         });
+        this.tel_num = response.tel_num
+        this.first_name = response.first_name
         this.$toast.success("Ви успішно зарєструвалися.", {
           toastClassName: ['uk-margin-top']
         })
-        await this.$router.push('/profile')
+        await this.$router.push('/courier')
       } catch (err) {
         if (!err.response)
           this.$toast.warning("Помилка мережі.", {

@@ -34,16 +34,37 @@ import auth from "@/middleware/auth";
 import _ from 'lodash'
 import onlyClient from "~/middleware/onlyClient";
 import ResErrorHandler from "@/utils/ResErrorHandler";
+
 export default {
   name: "next",
   middleware: [auth, onlyClient],
+  data: () => ({
+    phone_regex: null
+  }),
+  created() {
+    this.phone_regex = new RegExp('^(380)([0-9]{9})$')
+  },
   methods: {
     send_update: _.debounce(async function () {
       try {
-        await this.$axios.$put('/user-profile', {
-          "first_name": this.first_name,
-          "tel_num": this.tel_num
+        if (this.first_name.trim().length < 3){
+          this.$toast.warning("Введіть корректне ім'я", {
+            toastClassName: ['uk-margin-top']
+          })
+          return
+        }
+        if (!this.phone_regex.test(this.tel_num)) {
+          this.$toast.warning("Введіть корректний номер телефону 380..", {
+            toastClassName: ['uk-margin-top']
+          })
+          return
+        }
+        let response = await this.$axios.$put('/user-profile', {
+          "first_name": this.first_name.trim(),
+          "tel_num": this.tel_num.trim()
         });
+        this.tel_num = response.tel_num
+        this.first_name = response.first_name
         this.$toast.success("Ви успішно зарєструвалися", {
           toastClassName: ['uk-margin-top']
         })
@@ -54,13 +75,13 @@ export default {
           this.$toast.warning("Помилка мережі", {
             toastClassName: ['uk-margin-top']
           })
-        else{
+        else {
           this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Інформація не була додана.", {
             toastClassName: ['uk-margin-top']
           })
         }
       }
-    },2000,{leading:true, trailing:false})
+    }, 2000, {leading: true, trailing: false})
   },
   computed: {
     first_name: {
