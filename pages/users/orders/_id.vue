@@ -111,15 +111,26 @@ export default {
     interval: null
   }),
   async created(){
+
     await this.getDetails();
   },
+  async mounted(){
+    window.addEventListener('beforeunload', () => {
+      this.disconnect_socket()
+    })
+  },
   deactivated() {
-    clearInterval(this.interval)
+    this.disconnect_socket()
   },
   beforeDestroy() {
-    clearInterval(this.interval)
+    this.disconnect_socket()
   },
   methods: {
+    disconnect_socket(){
+      this.websocket.onclose = function () {}; // disable onclose handler first
+      clearInterval(this.interval)
+      this.websocket.close();
+    },
     decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {
       try {

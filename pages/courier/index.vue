@@ -72,15 +72,23 @@ export default {
     //   })
   },
   async mounted() {
+    window.addEventListener('beforeunload', () => {
+      this.disconnect_socket()
+    })
     this.interval = setInterval(this.connectSocket, 2000)
   },
   deactivated() {
-    clearInterval(this.interval)
+    this.disconnect_socket()
   },
   beforeDestroy() {
-    clearInterval(this.interval)
+    this.disconnect_socket()
   },
   methods: {
+    disconnect_socket(){
+      this.websocket.onclose = function () {}; // disable onclose handler first
+      clearInterval(this.interval)
+      this.websocket.close();
+    },
     async get_active_order() {
       try {
         let response = await this.$axios.$get('/courier/orders/current');
