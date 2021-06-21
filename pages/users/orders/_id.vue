@@ -178,7 +178,6 @@ export default {
           token: this.token
         }))
       this.connected = true
-
     },
     async on_message(event) {
       const data = JSON.parse(event.data)

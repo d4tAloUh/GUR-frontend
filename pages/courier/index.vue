@@ -60,7 +60,7 @@ export default {
     connected: false,
     orders: [],
     websocket: null,
-    max_distance: 3500,
+    max_distance: 3.5,
     interval: null,
   }),
   async fetch() {
