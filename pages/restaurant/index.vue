@@ -31,15 +31,20 @@
             <KeepAlive>
               <GoogleMap/>
             </KeepAlive>
-            <template v-for="restaurant in restaurantList" v-if="accepted">
-              <KeepAlive>
-                <Restaurant :restaurant=restaurant location_to="restaurant-id"></Restaurant>
-              </KeepAlive>
-            </template>
-            <div class="uk-container uk-container-center uk-text-center" v-if="restaurantList.length === 0 && accepted">
-              <img src="https://assets-ouch.icons8.com/preview/19/52de2377-696e-4194-8c63-0a81aef60b4f.png" height="600"
-                   width="600">
-              <p>Ресторанів не знайдено</p>
+            <Loading v-if="loading"></Loading>
+            <div v-else>
+              <template v-for="restaurant in restaurantList" v-if="accepted">
+                <KeepAlive>
+                  <Restaurant :restaurant=restaurant location_to="restaurant-id"></Restaurant>
+                </KeepAlive>
+              </template>
+              <div class="uk-container uk-container-center uk-text-center"
+                   v-if="restaurantList.length === 0 && accepted">
+                <img src="https://assets-ouch.icons8.com/preview/19/52de2377-696e-4194-8c63-0a81aef60b4f.png"
+                     height="600"
+                     width="600">
+                <p>Ресторанів не знайдено</p>
+              </div>
             </div>
           </div>
           <div class="uk-container uk-container-center uk-text-center" v-else>
@@ -58,12 +63,16 @@ import GoogleMap from "~/components/misc/GoogleMap";
 import {mapGetters} from 'vuex'
 import Restaurant from "@/components/restaurant/Restaurant";
 import _ from 'lodash'
+import onlyClient from "~/middleware/onlyClient";
+import Loading from "~/components/misc/LoadingBar";
 
 export default {
   name: "restaurant",
-  components: {Restaurant, GoogleMap},
+  components: {Restaurant, GoogleMap, Loading},
+  middleware: [onlyClient],
   data: () => ({
     restaurantList: [],
+    loading: false
   }),
   activated() {
     // if updated more than 30sec before now
@@ -79,15 +88,13 @@ export default {
     getRestaurants: _.debounce(async function () {
       if (this.isAuthenticated && this.location && this.accepted && this.finishedRegistration)
         try {
+          this.loading = true
           this.restaurantList = await this.$axios.$get('/restaurants', {
             params: {
               'longitude': this.location[0],
               'latitude': this.location[1]
             }
           });
-          // this.restaurantList.sort(function (a, b) {
-          //   return (a === b) ? 0 : a ? 1 : -1
-          // })
         } catch (err) {
           if (!err.response) {
             this.$toast.error("Помилка мережі", {
@@ -97,22 +104,18 @@ export default {
           } else {
             console.error(err.response)
           }
+        } finally {
+          this.loading = false
         }
     }, 2000, {leading: true, trailing: false})
   },
   computed: {
-    location() {
-      return this.$store.getters['order/location']
-    },
-    address() {
-      return this.$store.getters['order/address']
-    },
-    accepted() {
-      return this.$store.getters['order/accepted']
-    },
     ...mapGetters({
       isAuthenticated: 'authorization/isAuthenticated',
-      finishedRegistration: 'authorization/isSettedUp'
+      finishedRegistration: 'authorization/isSettedUp',
+      location: 'order/location',
+      address: 'order/address',
+      accepted: 'order/accepted'
     })
   },
   watch: {

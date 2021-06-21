@@ -50,7 +50,7 @@
           <NuxtLink :to="{ name: 'restaurant-id', params: { id: currentRestId }}" tag="a">Повернутись до ресторану
           </NuxtLink>
         </div>
-        <div>Або <a @click="clearCart"> видалити </a> попереднє замовлення</div>
+          <div>Або <a @click="clearCart"> видалити </a> попереднє замовлення</div>
       </div>
     </div>
     <div v-else>
@@ -66,10 +66,12 @@ import Cart from "~/components/cart/Cart";
 import {mapActions, mapGetters} from 'vuex'
 import auth from "@/middleware/auth";
 import Loading from "@/components/misc/LoadingBar";
+import onlyClient from "~/middleware/onlyClient";
+import OrderHelper from "~/utils/OrderHelper";
 
 export default {
   name: "rest_id",
-  middleware: [auth],
+  middleware: [auth, onlyClient],
   components: {Cart, Loading},
   data: () => ({
     dishes: [],
@@ -83,7 +85,6 @@ export default {
     async getDishes() {
       try {
         let response = await this.$axios.$get('/restaurant-dishes/' + this.$route.params.id);
-        console.log(response)
         this.dishes = response.dishes
         this.restaurant = response.restaurant
         this.open = response.restaurant.is_open
@@ -114,15 +115,12 @@ export default {
     },
     ...mapActions({
       removeFromCart: 'cart/removeItem',
+      clearCart: 'cart/emptyCart'
     }),
-    async clearCart() {
-      await this.$store.dispatch('cart/emptyCart')
-    }
+    decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
+
     sameRestaurant: function () {
       return (this.$store.getters["cart/rest_id"] === 0) || (Number(this.$route.params.id) === Number(this.$store.getters["cart/rest_id"]))
     },

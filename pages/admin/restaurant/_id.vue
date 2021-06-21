@@ -48,10 +48,11 @@ export default {
       return error({ statusCode: 404, message: '' })
     }
   },
-  async created() {
+  async fetch(){
     this.restaurant = this.restaurant_passed
     await this.getDishes();
   },
+
   methods: {
     async getDishes() {
       try {
@@ -97,9 +98,6 @@ export default {
       set(value) {
         this.$route.params.restaurant = value
       }
-    },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
     },
   }
 }

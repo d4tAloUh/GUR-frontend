@@ -16,6 +16,9 @@
     </client-only>
     <h2>Ваше замовлення:</h2>
     <div v-if="price > 0">
+      <NuxtLink :to="{ name: 'restaurant-id', params: { id: rest_id }}" tag="a" class="uk-button uk-button-primary uk-align-right"
+      >Повернутися у ресторан
+      </NuxtLink>
       <table class="uk-table uk-table-striped uk-table-small uk-table-responsive">
         <thead>
         <tr>
@@ -63,11 +66,10 @@
           </textarea>
         </div>
         <div>
-          <button type="submit" class="uk-button uk-button-primary" name="button">Створити замовення</button>
-          <button class="uk-button uk-button-danger uk-float-right" @click="clearCart" >Прибрати усе з кошика</button>
+          <button type="submit" class="uk-button uk-button-primary" name="button" >Створити замовення</button>
+          <button class="uk-button uk-button-danger uk-float-right" @click="clearCart" type="button">Прибрати усе з кошика</button>
         </div>
       </form>
-
 
     </div>
     <div v-else>
@@ -78,16 +80,18 @@
 </template>
 
 <script>
-import Cart from "@/components/cart/Cart";
+import Cart from "~/components/cart/Cart";
 import {mapActions, mapGetters} from "vuex";
-import auth from "@/middleware/auth";
+import auth from "~/middleware/auth";
 import Uikit from 'uikit'
-import setted from "@/middleware/setted";
+import setted from "~/middleware/setted";
+import onlyClient from "~/middleware/onlyClient";
+import OrderHelper from "~/utils/OrderHelper";
 
 
 export default {
   name: "create",
-  middleware: [auth, setted],
+  middleware: [auth, setted, onlyClient],
   data: () => ({
     address: '',
     predicted_address: '',
@@ -110,6 +114,7 @@ export default {
     ...mapActions({
       removeFromCart: 'cart/removeItem',
       deleteFromCart: 'cart/deleteItem',
+      clearCart: 'cart/emptyCart'
     }),
     sendCart: async function () {
       if (this.order_location.length !== 0 && this.address.length !== 0) {
@@ -117,15 +122,18 @@ export default {
           this.$toast.info("Спочатку підтвердіть адресу доставки", {
             toastClassName: ['uk-margin-top']
           })
-        } else {
-          await this.$axios.$put('/orders', {
-            "order_id": this.order_id,
+        } else if (this.selectedDishes.length > 0 && this.rest_id !== 0) {
+          console.log(this.rest_id, this.selectedDishes)
+          await this.$axios.$put('/orders/' + this.order_id, {
             "order_details": this.order_details,
-            "longitude": this.order_location[0],
-            "latitude": this.order_location[1],
+            "delivery_location":{
+              "longitude": this.order_location[0],
+              "latitude": this.order_location[1],
+            },
             "delivery_address": this.address
           })
             .then(res => {
+              const order_id = this.order_id
               this.$store.dispatch('cart/finishOrder')
               this.$store.dispatch('cart/setOrder', 0)
               this.$store.dispatch('order/clear')
@@ -133,6 +141,7 @@ export default {
               this.$toast.success("Дякуємо за замовлення", {
                 toastClassName: ['uk-margin-top']
               })
+              this.$router.push('/users/orders/' + order_id)
             })
             .catch(err => {
               if (!err.response){
@@ -142,16 +151,12 @@ export default {
                 console.error(err)
               }
               else{
-                if (err.response.data && err.response.data.error && err.response.data.error ==='Ваше замовлення пусте'){
-                    this.clearCart()
-                    this.$toast.error("Таких страв більше не існує", {
+                if (err.response.data && err.response.data.error){
+                    this.$toast.error(err.response.data.error, {
                       toastClassName: ['uk-margin-top']
                     })
+                  this.clearCart()
                 }
-                else
-                this.$toast.error(err.response.data.error || "Сталася помилка", {
-                  toastClassName: ['uk-margin-top']
-                })
                 console.error(err.response)
               }
             })
@@ -193,9 +198,7 @@ export default {
       this.accepted = false
       Uikit.modal('.address-confirmation').toggle()
     },
-    async clearCart() {
-      await this.$store.dispatch('cart/emptyCart')
-    }
+    decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {
     ...mapGetters({
@@ -204,11 +207,8 @@ export default {
       order_id: 'cart/order_id',
       order_location: 'order/location',
       delivery_address: 'order/address',
+      rest_id: 'cart/rest_id'
     }),
-
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
     google_key : function (){
       return process.env.google_key
     }
@@ -220,8 +220,6 @@ export default {
       }
     }
   }
-
-
 }
 </script>
 

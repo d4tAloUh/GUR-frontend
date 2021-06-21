@@ -11,20 +11,24 @@ export const mutations = {
     state.location = location
     Cookies.set('location', state.location)
   },
+
   setAddress(state, address) {
     state.address = address
     Cookies.set('address',  state.address)
   },
+
   clearLocationAndAddress(state){
     state.address = null
     state.location = []
     Cookies.set('address',  null)
     Cookies.set('location', [])
   },
+
   setAccepted(state, val) {
     state.accepted = val
   }
 }
+
 export const actions = {
   async setLoc({commit}, location) {
     commit('setLocation', location)

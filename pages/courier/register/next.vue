@@ -22,7 +22,7 @@
               </div>
             </div>
           </fieldset>
-          <button class="uk-button uk-button-default uk-align-right green">Відправити</button>
+          <button class="uk-button uk-button-default uk-align-right green" type="submit">Відправити</button>
         </form>
       </div>
     </div>
@@ -32,12 +32,12 @@
 <script>
 import auth from "@/middleware/auth";
 import _ from 'lodash'
-import onlyClient from "~/middleware/onlyClient";
+import onlyCourier from "~/middleware/onlyCourier";
 import ResErrorHandler from "@/utils/ResErrorHandler";
 
 export default {
   name: "next",
-  middleware: [auth, onlyClient],
+  middleware: [auth, onlyCourier],
   data: () => ({
     phone_regex: null
   }),
@@ -65,23 +65,22 @@ export default {
         });
         this.tel_num = response.tel_num
         this.first_name = response.first_name
-        this.$toast.success("Ви успішно зарєструвалися", {
+        this.$toast.success("Ви успішно зарєструвалися.", {
           toastClassName: ['uk-margin-top']
         })
-        await this.$store.dispatch('cart/syncWithServer')
-        await this.$router.push('/restaurant')
+        await this.$router.push('/courier')
       } catch (err) {
         if (!err.response)
-          this.$toast.warning("Помилка мережі", {
+          this.$toast.warning("Помилка мережі.", {
             toastClassName: ['uk-margin-top']
           })
-        else {
+        else{
           this.$toast.warning(ResErrorHandler.checkFormErrors(err) || "Сталася помилка. Інформація не була додана.", {
             toastClassName: ['uk-margin-top']
           })
         }
       }
-    }, 2000, {leading: true, trailing: false})
+    },2000,{leading:true, trailing:false})
   },
   computed: {
     first_name: {

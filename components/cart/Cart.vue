@@ -28,7 +28,7 @@
         </tbody>
       </table>
 
-      <NuxtLink tag="button" to="/orders/create" class="uk-button uk-button-primary" name="button">Зробити замовлення
+      <NuxtLink tag="button" to="/users/orders/create" class="uk-button uk-button-primary" name="button">Зробити замовлення
         ({{ decimalPrice(price) }}₴)
       </NuxtLink>
     </div>
@@ -38,6 +38,7 @@
 
 <script>
 import {mapActions} from 'vuex'
+import OrderHelper from "~/utils/OrderHelper"
 
 export default {
   name: "Cart",
@@ -51,6 +52,7 @@ export default {
       deleteFromCart: 'cart/deleteItem',
       syncOrder: 'cart/syncWithServer'
     }),
+    decimalPrice: OrderHelper.decimalPrice
   },
   async beforeMount() {
     await this.syncOrder();
@@ -65,12 +67,6 @@ export default {
     price() {
       return this.$store.getters['cart/price']
     },
-    numberOfItems() {
-      return this.$store.getters['cart/numberOfItems']
-    },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    }
 
   }
 }

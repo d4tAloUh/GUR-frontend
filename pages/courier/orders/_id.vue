@@ -4,7 +4,7 @@
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
     <div v-if="order">
-      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }}</h2>
+      <h2 class="uk-text-center">Замовлення № {{ this.$route.params.id }} {{ order.location }}</h2>
       <div uk-grid>
         <div class="uk-width-1-2@l">
           <div class="uk-card uk-card-default uk-card-body uk-margin">
@@ -15,7 +15,7 @@
               </p>
             </div>
             <div>
-              <OrderStatus v-bind:statuses=order.order_status />
+              <OrderStatus v-bind:statuses=order.order_status></OrderStatus>
             </div>
             <div>
               <p>Ресторан: {{ order.restaurant.name }}</p>
@@ -72,41 +72,39 @@
 </template>
 
 <script>
-import auth from "@/middleware/auth";
-import Loading from "@/components/misc/LoadingBar";
-import OrderStatus from "@/components/misc/OrderStatus";
-import setted from "@/middleware/setted";
+import auth from "~/middleware/auth";
+import setted from "~/middleware/setted";
+import Loading from "~/components/misc/LoadingBar";
+import OrderStatus from "~/components/misc/OrderStatus";
+import onlyCourier from "~/middleware/onlyCourier";
+import OrderHelper from "~/utils/OrderHelper";
 
 export default {
-  name: "Order_detail",
-  components: {Loading,OrderStatus},
-  middleware: [auth, setted],
+  name: "courier-order-id",
+  components: {Loading, OrderStatus},
+  middleware: [auth, setted, onlyCourier],
   data: () => ({
     dishes: [],
-    order: null
+    order: null,
   }),
-  async beforeMount() {
+  async created() {
     await this.getDetails();
   },
   methods: {
     async getDetails() {
       try {
-        this.loading = true
-        let response = await this.$axios.$get('/user-orders-key/' + this.$route.params.id);
-        this.loading = false
+        let response = await this.$axios.$get('/courier-orders/' + this.$route.params.id);
         this.dishes = response.dishes
         this.order = response.order
       } catch (err) {
-
-        this.loading = false
-        if (!err.response){
+        console.log(err.response)
+        if (!err.response) {
           this.$toast.error("Помилка мережі", {
             toastClassName: ['uk-margin-top']
           })
           console.error(err)
-        }
-        else{
-          if (Number(err.response.status) === 403 || Number(err.response.status) === 404) {
+        } else {
+          if (Number(err.response.status) === 404) {
             this.$toast.error("Такого замовлення не існує", {
               toastClassName: ['uk-margin-top']
             })
@@ -122,12 +120,8 @@ export default {
         }
       }
     },
+    decimalPrice: OrderHelper.decimalPrice
   },
-  computed: {
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    }
-  }
 }
 </script>
 

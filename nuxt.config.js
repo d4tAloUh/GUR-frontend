@@ -18,7 +18,8 @@ export default {
     ]
   },
   env: {
-    google_key: process.env.google_key || 'AIzaSyC5aRn9eeSv9WaTQCucsed0S_-57rETsW0'
+    google_key: process.env.google_key || 'AIzaSyC5aRn9eeSv9WaTQCucsed0S_-57rETsW0',
+    server_url: process.env.server_url || '127.0.0.1:8000'
   },
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
@@ -40,12 +41,15 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/axios',
-    "vue-toastification/nuxt",
+    {src: "vue-toastification/nuxt", ssr: false},
     '@nuxtjs/proxy'
   ],
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+  server: {
+    host: "0.0.0.0"
+  },
   //https://axios.nuxtjs.org/setup/
   axios: {
     baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api',
@@ -53,9 +57,9 @@ export default {
     debug: true,
     proxy: true
   },
-  proxy: {
-    '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
-  },
+  // proxy: {
+  //   '/api':process.env.baseURL || 'http://127.0.0.1:8000/api'
+  // },
   loaders:
     {
       vue: {

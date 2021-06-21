@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="uk-child-width-1-2@m uk-grid">
       <div>
         <div class="uk-card uk-card-default uk-card-small uk-card-body">
@@ -14,7 +13,7 @@
           <form @submit.stop.prevent="handleSubmit">
             <fieldset class="uk-fieldset">
 
-              <legend class="uk-legend">Реєстрація користувача</legend>
+              <legend class="uk-legend">Реєстрація кур'єра</legend>
 
               <div class="uk-margin">
                 <label class="uk-form-label" for="email-id">Емейл</label>
@@ -41,8 +40,8 @@
               </div>
               <div class="uk-margin">
                 <p>
-                  Хочете зареєструватися як кур'єр?
-                  <NuxtLink :to="{ path: '/courier/register'}" exact>
+                  Хочете зареєструватися як користувач?
+                  <NuxtLink :to="{ path: '/users/register'}" exact>
                     Реєстрація
                   </NuxtLink>
                 </p>
@@ -59,10 +58,10 @@
 
 <script>
 import _ from "lodash";
-import ResErrorHandler from "~/utils/ResErrorHandler";
+import ResErrorHandler from "@/utils/ResErrorHandler";
 
 export default {
-  name: "register_user",
+  name: "courier_register",
   data: () => ({
     email: '',
     password: '',
@@ -81,7 +80,7 @@ export default {
         this.$toast.success("Успішна реєстрація, увійдіть у аккаунт.", {
           toastClassName: ['uk-margin-top']
         })
-        await this.$router.push('/users/signin')
+        await this.$router.push({name: 'users-signin', params: {as_courier: true}})
       } catch (err) {
         this.loading = false;
         if (!err.response)
@@ -103,4 +102,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

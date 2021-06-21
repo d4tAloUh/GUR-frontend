@@ -1,9 +1,8 @@
 <template>
   <div>
-    <div v-if="loading">
-      <LoadingBar/>
+    <div v-if="$fetchState.pending">
+      <Loading />
       <div class="uk-margin-top uk-text-center uk-text-large">Зачекайте будь ласка..</div>
-
     </div>
     <DishForm :dish="dish" v-else/>
   </div>
@@ -13,36 +12,32 @@
 import DishForm from "~/components/forms/DishForm";
 import admin from "~/middleware/admin";
 import auth from "~/middleware/auth";
-import LoadingBar from "~/components/misc/LoadingBar";
+import Loading from "~/components/misc/LoadingBar";
 
 export default {
   name: "admin-dish-id",
-  components: {DishForm, LoadingBar},
+  components: { DishForm, Loading },
   middleware: [admin, auth],
   data: () => ({
     dish: Object,
-    loading: true,
   }),
   activated() {
     if (!this.$store.getters['authorization/admin'] && !this.$store.getters['authorization/partial_admin']) {
       return error({statusCode: 404, message: ''})
     }
   },
-  async created() {
-    this.dish = this.dish_passed
-    if (!this.dish_passed) {
-      await this.getDish()
-    }
-    else{
-      this.loading = false
-    }
+  async fetch(){
+      this.dish = this.dish_passed
+      if (!this.dish_passed) {
+        await this.getDish()
+      }
   },
+
   methods: {
     async getDish() {
       try {
         let response = await this.$axios.$get('/restaurant-dishes-exact/' + this.$route.params.id)
         this.dish = response.dish
-        this.loading = false
       } catch (err) {
         if (!err.response) {
           this.$toast.error("Помилка мережі", {
@@ -74,9 +69,7 @@ export default {
         this.$route.params.dish = value
       }
     },
-    decimalPrice: function () {
-      return price => `${Number(price) / 100}`;
-    },
+
   }
 }
 </script>
