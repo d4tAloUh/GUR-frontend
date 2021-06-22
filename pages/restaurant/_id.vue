@@ -3,7 +3,7 @@
     <NuxtLink tag="a" class="uk-button uk-button-primary uk-margin" to="/restaurant" exact><span
       uk-icon="arrow-left"></span> назад
     </NuxtLink>
-    <div v-if="$fetchState.pending">
+    <div v-if="loading">
       <Loading />
     </div>
     <div v-else-if="open">
@@ -77,13 +77,15 @@ export default {
     dishes: [],
     open: true,
     restaurant: null,
+    loading: false
   }),
-  async fetch() {
+  async mounted() {
     await this.getDishes();
   },
   methods: {
     async getDishes() {
       try {
+        this.loading = true
         let response = await this.$axios.$get('/restaurant-dishes/' + this.$route.params.id);
         this.dishes = response.dishes
         this.restaurant = response.restaurant
@@ -108,6 +110,9 @@ export default {
           console.error(err.response.data)
         }
       }
+      finally {
+        this.loading = false
+      }
     },
     async addToCart(item) {
       this.$store.dispatch('cart/addItem', item)
@@ -120,7 +125,6 @@ export default {
     decimalPrice: OrderHelper.decimalPrice,
   },
   computed: {
-
     sameRestaurant: function () {
       return (this.$store.getters["cart/rest_id"] === 0) || (Number(this.$route.params.id) === Number(this.$store.getters["cart/rest_id"]))
     },

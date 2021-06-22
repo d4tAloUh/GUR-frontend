@@ -110,11 +110,8 @@ export default {
     order: null,
     interval: null
   }),
-  async created(){
-
-    await this.getDetails();
-  },
   async mounted(){
+    await this.getDetails();
     window.addEventListener('beforeunload', () => {
       this.disconnect_socket()
     })
@@ -127,9 +124,13 @@ export default {
   },
   methods: {
     disconnect_socket(){
-      this.websocket.onclose = function () {}; // disable onclose handler first
-      clearInterval(this.interval)
-      this.websocket.close();
+      try {
+        this.websocket.onclose = function () {
+        }; // disable onclose handler first
+        clearInterval(this.interval)
+        this.websocket.close();
+      }
+      catch (e){}
     },
     decimalPrice: OrderHelper.decimalPrice,
     async getDetails() {

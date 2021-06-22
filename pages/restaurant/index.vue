@@ -74,13 +74,7 @@ export default {
     restaurantList: [],
     loading: false
   }),
-  activated() {
-    // if updated more than 30sec before now
-    if (this.$fetchState.timestamp <= Date.now() - 30000) {
-      this.$fetch()
-    }
-  },
-  async fetch() {
+  async mounted() {
     if (this.restaurantList.length === 0)
       await this.getRestaurants();
   },

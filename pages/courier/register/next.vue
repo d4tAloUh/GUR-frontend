@@ -59,7 +59,7 @@ export default {
           })
           return
         }
-        let response = await this.$axios.$put('/user-profile', {
+        let response = await this.$axios.$put('/courier -profile', {
           "first_name": this.first_name.trim(),
           "tel_num": this.tel_num.trim()
         });

@@ -20,9 +20,9 @@
 
     <div v-else>
       <h3>Вільні замовлення</h3>
-        <!--      <CourierMap-->
-        <!--        :apiKey=google_key-->
-        <!--        :markers=markers></CourierMap>-->
+      <!--      <CourierMap-->
+      <!--        :apiKey=google_key-->
+      <!--        :markers=markers></CourierMap>-->
       <div v-if="courier_working" class="uk-card uk-card-default uk-card-body uk-margin">
         <CourierOrder v-for="order in available_orders" :key="order.order_id" v-bind:order="order">
         </CourierOrder>
@@ -63,15 +63,13 @@ export default {
     max_distance: 3.5,
     interval: null,
   }),
-  async fetch() {
-    await this.get_active_order()
-    await this.retrieve_free_orders()
     // navigator.geolocation.getCurrentPosition(position => {
     //   this.latitude = position.coords.latitude
     //   this.longitude = position.coords.longitude
     //   })
-  },
   async mounted() {
+    await this.get_active_order()
+    await this.retrieve_free_orders()
     window.addEventListener('beforeunload', () => {
       this.disconnect_socket()
     })
@@ -84,10 +82,13 @@ export default {
     this.disconnect_socket()
   },
   methods: {
-    disconnect_socket(){
-      this.websocket.onclose = function () {}; // disable onclose handler first
-      clearInterval(this.interval)
-      this.websocket.close();
+    disconnect_socket() {
+      try {
+        this.websocket.onclose = function () {
+        }; // disable onclose handler first
+        clearInterval(this.interval)
+        this.websocket.close();
+      } catch (e) {}
     },
     async get_active_order() {
       try {

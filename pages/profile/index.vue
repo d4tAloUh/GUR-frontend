@@ -44,7 +44,7 @@
       <div class="uk-width-expand">
         <div class="uk-card uk-card-default uk-card-body uk-margin">
           <h3 class="uk-text-center">Ваші замовлення</h3>
-          <div v-if="$fetchState.pending">
+          <div v-if="loading">
             <Loading/>
           </div>
           <OrderComponent v-else v-for="order in orders" :key="order.order_id" :order="order">
@@ -79,12 +79,13 @@ export default {
     update_profile: false,
     orders: [],
     websocket: null,
-    phone_regex: null
+    phone_regex: null,
+    loading: false
   }),
   created() {
     this.phone_regex = new RegExp('^(380)([0-9]{9})$')
   },
-  async fetch() {
+  async mounted() {
     await this.retrieve_orders();
   },
   computed: {
@@ -113,6 +114,7 @@ export default {
   methods: {
     retrieve_orders: async function () {
       try {
+        this.loading = true
         let url = '/user-orders'
         if (this.is_courier) {
           url = '/courier-orders'
@@ -130,6 +132,9 @@ export default {
           })
           console.error(err.response)
         }
+      }
+      finally {
+        this.loading = false
       }
     },
     update_profile_method: function (value) {

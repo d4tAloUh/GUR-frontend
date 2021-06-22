@@ -87,7 +87,7 @@ export default {
     dishes: [],
     order: null,
   }),
-  async created() {
+  async mounted() {
     await this.getDetails();
   },
   methods: {
