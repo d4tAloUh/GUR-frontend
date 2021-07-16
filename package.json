@@ -19,7 +19,7 @@
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
     "nuxt": "^2.15.6",
-    "uikit": "^3.6.22",
+    "uikit": "^3.7.1",
     "vue": "^2.6.12",
     "vue-toastification": "^1.7.11",
     "vuex": "^3.6.2",
