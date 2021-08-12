@@ -18,7 +18,7 @@
     "flatted": "^3.1.1",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
-    "nuxt": "^2.15.6",
+    "nuxt": "^2.15.8",
     "uikit": "^3.6.22",
     "vue": "^2.6.12",
     "vue-toastification": "^1.7.11",
