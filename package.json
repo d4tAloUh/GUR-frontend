@@ -21,7 +21,7 @@
     "nuxt": "^2.15.6",
     "uikit": "^3.6.22",
     "vue": "^2.6.12",
-    "vue-toastification": "^1.7.11",
+    "vue-toastification": "^1.7.14",
     "vuex": "^3.6.2",
     "ws": "^7.5.0"
   }
