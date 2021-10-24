@@ -41,7 +41,10 @@ export default {
     restaurants: []
   }),
   activated() {
-    if (!this.$store.getters['authorization/admin'] && !this.$store.getters['authorization/partial_admin']) {
+    if (
+      !this.$store.getters['authorization/admin'] &&
+      !this.$store.getters['authorization/partial_admin']
+    ) {
       return error({ statusCode: 404, message: '' })
     }
     // if updated more than 10sec before now
