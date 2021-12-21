@@ -10,7 +10,7 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
-    "@googlemaps/js-api-loader": "^1.12.11",
+    "@googlemaps/js-api-loader": "^1.12.12",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/proxy": "^2.1.0",
     "cookieparser": "^0.1.0",
